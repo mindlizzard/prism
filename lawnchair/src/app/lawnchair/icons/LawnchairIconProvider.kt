@@ -220,7 +220,7 @@ class LawnchairIconProvider @Inject constructor(
         }
         val forgedIcon = if (
             systemIcon != null &&
-            iconEntry == null &&
+            iconPackIcon == null &&
             prefs.prismForgeEnabled.get()
         ) {
             val selectedPack = iconPack
@@ -259,6 +259,7 @@ class LawnchairIconProvider @Inject constructor(
             "tb=${prefs.tintIconPackBackgrounds.get()}," +
             "pf=${prefs.prismForgeEnabled.get()}," +
             "pfs=${prefs.prismForgeStyle.get()}," +
+            "pfv=$PRISM_FORGE_CACHE_VERSION," +
             "ov=$overrideState"
     }
 
@@ -451,6 +452,7 @@ class LawnchairIconProvider @Inject constructor(
     }
 
     companion object {
+        private const val PRISM_FORGE_CACHE_VERSION = 2
         const val TAG = "LawnchairIconProvider"
     }
 }

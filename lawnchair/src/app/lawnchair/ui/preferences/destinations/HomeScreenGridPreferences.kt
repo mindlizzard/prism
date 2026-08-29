@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -36,6 +37,7 @@ import app.lawnchair.DeviceProfileOverrides
 import app.lawnchair.preferences.asPreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
+import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.components.GridOverridesPreview
@@ -54,17 +56,21 @@ fun HomeScreenGridPreferences(
     val isExpandedScreen = LocalIsExpandedScreen.current
     val isPortrait = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
     PreferenceLayout(
-        label = stringResource(id = R.string.home_screen_grid),
+        label = stringResource(id = R.string.prism_layout_lab_title),
         modifier = modifier,
         isExpandedScreen = true,
         scrollState = null,
     ) {
         val controlsScrollState = rememberScrollState()
         val prefs = preferenceManager()
+        val prefs2 = preferenceManager2()
         val columnsAdapter = prefs.workspaceColumns.getAdapter()
         val rowsAdapter = prefs.workspaceRows.getAdapter()
         val hotseatColumnsAdapter = prefs.hotseatColumns.getAdapter()
         val hotseatColumnsUnfoldedAdapter = prefs.hotseatColumnsUnfolded.getAdapter()
+        val iconSizeAdapter = prefs2.homeIconSizeFactor.getAdapter()
+        val horizontalPaddingAdapter = prefs2.workspacePaddingHorizontalFactor.getAdapter()
+        val verticalPaddingAdapter = prefs2.workspacePaddingVerticalFactor.getAdapter()
         val increaseMaxGridSize = prefs.workspaceIncreaseMaxGridSize.getAdapter()
         val isFoldable = InvariantDeviceProfile.deviceType == InvariantDeviceProfile.TYPE_MULTI_DISPLAY
 
@@ -72,6 +78,9 @@ fun HomeScreenGridPreferences(
         val originalRows = remember { rowsAdapter.state.value }
         val originalHotseatColumns = remember { hotseatColumnsAdapter.state.value }
         val originalHotseatColumnsUnfolded = remember { hotseatColumnsUnfoldedAdapter.state.value }
+        val originalIconSize = remember { iconSizeAdapter.state.value }
+        val originalHorizontalPadding = remember { horizontalPaddingAdapter.state.value }
+        val originalVerticalPadding = remember { verticalPaddingAdapter.state.value }
 
         val columns = rememberSaveable { mutableIntStateOf(originalColumns) }
         val rows = rememberSaveable { mutableIntStateOf(originalRows) }
@@ -79,6 +88,39 @@ fun HomeScreenGridPreferences(
         val hotseatColumnsUnfolded = rememberSaveable {
             mutableIntStateOf(originalHotseatColumnsUnfolded.coerceAtLeast(originalHotseatColumns))
         }
+        val iconSize = rememberSaveable { mutableFloatStateOf(originalIconSize) }
+        val horizontalPadding = rememberSaveable { mutableFloatStateOf(originalHorizontalPadding) }
+        val verticalPadding = rememberSaveable { mutableFloatStateOf(originalVerticalPadding) }
+
+        val layoutPresets = listOf(
+            PrismGridPreset(
+                label = stringResource(id = R.string.prism_layout_showcase),
+                columns = 4,
+                rows = 6,
+                dockIcons = 4,
+                iconSize = 1.2f,
+                horizontalPadding = 0.85f,
+                verticalPadding = 0.85f,
+            ),
+            PrismGridPreset(
+                label = stringResource(id = R.string.prism_layout_balanced),
+                columns = 5,
+                rows = 7,
+                dockIcons = 5,
+                iconSize = 1f,
+                horizontalPadding = 1f,
+                verticalPadding = 1f,
+            ),
+            PrismGridPreset(
+                label = stringResource(id = R.string.prism_layout_compact),
+                columns = 6,
+                rows = 8,
+                dockIcons = 6,
+                iconSize = 0.85f,
+                horizontalPadding = 0.7f,
+                verticalPadding = 0.75f,
+            ),
+        )
 
         LaunchedEffect(hotseatColumns.intValue) {
             if (hotseatColumnsUnfolded.intValue < hotseatColumns.intValue) {
@@ -130,9 +172,12 @@ fun HomeScreenGridPreferences(
                     previewOverrides = if (isFoldable) {
                         DeviceProfileOverrides.PreviewOverrides(
                             foldableDatabaseHotseatIcons = hotseatColumnsUnfolded.intValue,
+                            homeIconSizeFactor = iconSize.floatValue,
                         )
                     } else {
-                        DeviceProfileOverrides.PreviewOverrides()
+                        DeviceProfileOverrides.PreviewOverrides(
+                            homeIconSizeFactor = iconSize.floatValue,
+                        )
                     },
                 )
 
@@ -146,6 +191,52 @@ fun HomeScreenGridPreferences(
                             .weight(1f)
                             .verticalScroll(controlsScrollState),
                     ) {
+                        PreferenceGroup(
+                            heading = stringResource(id = R.string.prism_layout_presets),
+                        ) {
+                            FlowRow(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                            ) {
+                                layoutPresets.forEach { preset ->
+                                    Button(
+                                        onClick = {
+                                            columns.intValue = preset.columns
+                                            rows.intValue = preset.rows
+                                            hotseatColumns.intValue = preset.dockIcons
+                                            iconSize.floatValue = preset.iconSize
+                                            horizontalPadding.floatValue = preset.horizontalPadding
+                                            verticalPadding.floatValue = preset.verticalPadding
+                                        },
+                                        shapes = ButtonDefaults.shapes(),
+                                    ) {
+                                        Text(text = preset.label)
+                                    }
+                                }
+                            }
+                            SliderPreference(
+                                label = stringResource(id = R.string.icon_sizes),
+                                adapter = iconSize.asPreferenceAdapter(),
+                                step = 0.05f,
+                                valueRange = 0.65f..1.35f,
+                                showAsPercentage = true,
+                            )
+                            SliderPreference(
+                                label = stringResource(id = R.string.horizontal_padding_label),
+                                adapter = horizontalPadding.asPreferenceAdapter(),
+                                step = 0.05f,
+                                valueRange = 0f..1.5f,
+                                showAsPercentage = true,
+                            )
+                            SliderPreference(
+                                label = stringResource(id = R.string.vertical_padding_label),
+                                adapter = verticalPadding.asPreferenceAdapter(),
+                                step = 0.05f,
+                                valueRange = 0f..1.5f,
+                                showAsPercentage = true,
+                            )
+                        }
                         if (isFoldable) {
                             FlowRow(
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -221,6 +312,9 @@ fun HomeScreenGridPreferences(
                             hotseatColumnsAdapter.onChange(hotseatColumns.intValue)
                             hotseatColumnsUnfoldedAdapter.onChange(hotseatColumnsUnfolded.intValue)
                         }
+                        iconSizeAdapter.onChange(iconSize.floatValue)
+                        horizontalPaddingAdapter.onChange(horizontalPadding.floatValue)
+                        verticalPaddingAdapter.onChange(verticalPadding.floatValue)
                         InvariantDeviceProfile.INSTANCE.get(context).onPreferencesChanged(context)
                         navController.popBackStack()
                     }
@@ -228,7 +322,10 @@ fun HomeScreenGridPreferences(
                     val isChanged = columns.intValue != originalColumns ||
                         rows.intValue != originalRows ||
                         hotseatColumns.intValue != originalHotseatColumns ||
-                        hotseatColumnsUnfolded.intValue != originalHotseatColumnsUnfolded
+                        hotseatColumnsUnfolded.intValue != originalHotseatColumnsUnfolded ||
+                        iconSize.floatValue != originalIconSize ||
+                        horizontalPadding.floatValue != originalHorizontalPadding ||
+                        verticalPadding.floatValue != originalVerticalPadding
 
                     Box(
                         modifier = Modifier
@@ -252,6 +349,16 @@ fun HomeScreenGridPreferences(
         }
     }
 }
+
+private data class PrismGridPreset(
+    val label: String,
+    val columns: Int,
+    val rows: Int,
+    val dockIcons: Int,
+    val iconSize: Float,
+    val horizontalPadding: Float,
+    val verticalPadding: Float,
+)
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable

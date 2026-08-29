@@ -153,7 +153,7 @@ fun HomeScreenPreferences(
         val rows by prefs.workspaceRows.getAdapter()
         PreferenceGroup(heading = stringResource(id = R.string.layout)) {
             NavigationActionPreference(
-                label = stringResource(id = R.string.home_screen_grid),
+                label = stringResource(id = R.string.prism_layout_lab_title),
                 destination = HomeScreenGrid,
                 subtitle = stringResource(id = R.string.x_by_y, columns, rows),
             )

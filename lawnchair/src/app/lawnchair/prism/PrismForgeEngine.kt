@@ -36,7 +36,10 @@ class PrismForgeEngine(
             analyzePack(iconPack, iconDpi)
         }
         val forgedStyle = createStyle(sourceAccent, profile, style)
-        val foreground = createForeground(source, forgedStyle.foregroundTint)
+        val foreground = createForeground(
+            source = source,
+            tint = forgedStyle.foregroundTint.takeIf { source is AdaptiveIconDrawable },
+        )
 
         return CustomAdaptiveIconDrawable(
             forgedStyle.background,
@@ -81,8 +84,14 @@ class PrismForgeEngine(
             ColorUtils.colorToHSL(sourceAccent, hsl)
             hsl[1] = ((hsl[1] + profile.saturation) / 2f).coerceIn(0.3f, 0.88f)
             hsl[2] = profile.lightness
+            val backgroundColor = ColorUtils.HSLToColor(hsl)
             ForgedStyle(
-                background = ColorDrawable(ColorUtils.HSLToColor(hsl)),
+                background = ColorDrawable(backgroundColor),
+                foregroundTint = if (ColorUtils.calculateLuminance(backgroundColor) > 0.52) {
+                    Color.BLACK
+                } else {
+                    Color.WHITE
+                },
                 inset = AUTO_INSET,
             )
         }

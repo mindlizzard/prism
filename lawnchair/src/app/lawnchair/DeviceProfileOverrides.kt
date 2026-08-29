@@ -89,6 +89,7 @@ class DeviceProfileOverrides @Inject constructor(
     /** Override for any other value that's not a DBGridInfo, extends this value when needed */
     data class PreviewOverrides(
         val foldableDatabaseHotseatIcons: Int? = null,
+        val homeIconSizeFactor: Float? = null,
     )
 
     data class Options(
@@ -121,7 +122,8 @@ class DeviceProfileOverrides @Inject constructor(
             numFolderRows = prefs.folderRows.get(defaultGrid),
             numFolderColumns = prefs2.folderColumns.firstCached(gridOption = defaultGrid),
 
-            iconSizeFactor = prefs2.homeIconSizeFactor.firstCached(),
+            iconSizeFactor = previewOverrides.homeIconSizeFactor
+                ?: prefs2.homeIconSizeFactor.firstCached(),
             allAppsIconSizeFactor = prefs2.drawerIconSizeFactor.firstCached(),
             allAppsIconTextSizeFactor =
             if (prefs2.showIconLabelsInDrawer.firstCached()) {
