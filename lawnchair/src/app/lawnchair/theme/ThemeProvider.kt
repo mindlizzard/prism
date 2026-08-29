@@ -8,6 +8,8 @@ import android.os.Handler
 import android.os.Looper
 import android.os.PatternMatcher
 import androidx.core.graphics.ColorUtils
+import app.lawnchair.prism.PrismBrand
+import app.lawnchair.prism.PrismTheme
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
 import app.lawnchair.theme.color.AndroidColor
@@ -43,6 +45,8 @@ class ThemeProvider @Inject constructor(
 
     private var accentColor: ColorOption = preferenceManager2.accentColor.firstCached()
     private var colorStyle: ColorStyle = preferenceManager2.colorStyle.firstCached()
+    private var prismThemeProfile: PrismBrand.ThemeProfile =
+        preferenceManager2.prismThemeProfile.firstCached()
 
     private val colorSchemeMap = HashMap<Pair<Int, Style>, ColorScheme>()
     private val listeners = mutableListOf<ColorSchemeChangeListener>()
@@ -54,7 +58,7 @@ class ThemeProvider @Inject constructor(
         }
         wallpaperManager.addOnChangeListener(object : WallpaperManagerCompat.OnColorsChangedListener {
             override fun onColorsChanged() {
-                if (accentColor is ColorOption.WallpaperPrimary) {
+                if (accentColor is ColorOption.WallpaperPrimary || profileUsesWallpaperSeed) {
                     notifyColorSchemeChanged()
                 }
             }
@@ -65,6 +69,10 @@ class ThemeProvider @Inject constructor(
         }
         preferenceManager2.colorStyle.onEach(launchIn = coroutineScope) {
             colorStyle = it
+            notifyColorSchemeChanged()
+        }
+        preferenceManager2.prismThemeProfile.onEach(launchIn = coroutineScope) {
+            prismThemeProfile = it
             notifyColorSchemeChanged()
         }
     }
@@ -88,21 +96,75 @@ class ThemeProvider @Inject constructor(
         )
     }
 
-    val colorScheme get() = when (val accentColor = this.accentColor) {
-        is ColorOption.SystemAccent -> systemColorScheme
+    val colorScheme
+        get() = when (prismThemeProfile) {
+            PrismBrand.ThemeProfile.SYSTEM -> systemColorScheme
 
-        is ColorOption.WallpaperPrimary -> {
-            val wallpaperPrimary = wallpaperManager.wallpaperColors?.primaryColor
-            getColorScheme(wallpaperPrimary ?: ColorOption.LawnchairBlue.color, colorStyle.style)
+            PrismBrand.ThemeProfile.WALLPAPER -> {
+                getColorScheme(wallpaperSeedColor, colorStyle.style)
+            }
+
+            PrismBrand.ThemeProfile.VIBRANT -> {
+                getColorScheme(
+                    PrismTheme.transformSeed(wallpaperSeedColor, prismThemeProfile),
+                    Style.VIBRANT,
+                )
+            }
+
+            PrismBrand.ThemeProfile.PASTEL -> {
+                getColorScheme(
+                    PrismTheme.transformSeed(wallpaperSeedColor, prismThemeProfile),
+                    Style.SPRITZ,
+                )
+            }
+
+            PrismBrand.ThemeProfile.AMOLED -> {
+                getColorScheme(selectedSeedColor, colorStyle.style)
+            }
+
+            PrismBrand.ThemeProfile.GLASS -> {
+                getColorScheme(
+                    PrismTheme.transformSeed(wallpaperSeedColor, prismThemeProfile),
+                    Style.TONAL_SPOT,
+                )
+            }
+
+            PrismBrand.ThemeProfile.CUSTOM -> {
+                getColorScheme(selectedSeedColor, colorStyle.style)
+            }
         }
 
-        is ColorOption.CustomColor -> getColorScheme(accentColor.color, colorStyle.style)
+    private val wallpaperSeedColor: Int
+        get() = wallpaperManager.wallpaperColors?.primaryColor
+            ?: selectedSeedColor
 
-        else -> getColorScheme(ColorOption.LawnchairBlue.color, colorStyle.style)
-    }
+    private val selectedSeedColor: Int
+        get() = when (val option = accentColor) {
+            is ColorOption.SystemAccent -> context.getSystemAccent(darkTheme = false)
+            is ColorOption.WallpaperPrimary -> wallpaperManager.wallpaperColors?.primaryColor
+                ?: ColorOption.LawnchairBlue.color
+            is ColorOption.CustomColor -> option.color
+            else -> ColorOption.LawnchairBlue.color
+        }
+
+    private val profileUsesWallpaperSeed: Boolean
+        get() = when (prismThemeProfile) {
+            PrismBrand.ThemeProfile.WALLPAPER,
+            PrismBrand.ThemeProfile.VIBRANT,
+            PrismBrand.ThemeProfile.PASTEL,
+            PrismBrand.ThemeProfile.GLASS,
+            -> true
+
+            PrismBrand.ThemeProfile.SYSTEM,
+            PrismBrand.ThemeProfile.AMOLED,
+            PrismBrand.ThemeProfile.CUSTOM,
+            -> false
+        }
 
     private val systemColorScheme get() = when {
-        Utilities.ATLEAST_S -> getColorScheme(0, colorStyle.style)
+        Utilities.ATLEAST_S -> colorSchemeMap.getOrPut(Pair(0, Style.TONAL_SPOT)) {
+            SystemColorScheme(context)
+        }
         else -> getColorScheme(context.getSystemAccent(darkTheme = false), colorStyle.style)
     }
 

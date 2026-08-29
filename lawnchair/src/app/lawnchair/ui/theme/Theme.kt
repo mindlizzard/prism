@@ -42,6 +42,7 @@ import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.preferenceManager2
+import app.lawnchair.prism.PrismBrand
 import app.lawnchair.theme.ThemeProvider
 import app.lawnchair.theme.toComposeColorScheme
 import app.lawnchair.ui.preferences.components.ThemeChoice
@@ -98,12 +99,51 @@ fun getColorScheme(darkTheme: Boolean): ColorScheme {
     val preferenceManager2 = preferenceManager2()
     val accentColor by preferenceManager2.accentColor.asState()
     val colorStyle by preferenceManager2.colorStyle.asState()
+    val prismThemeProfile by preferenceManager2.prismThemeProfile.asState()
 
-    val colorScheme = remember(accentColor, colorStyle.style) {
+    val colorScheme = remember(accentColor, colorStyle.style, prismThemeProfile) {
         ThemeProvider.INSTANCE.get(context).colorScheme
     }
 
-    return colorScheme.toComposeColorScheme(isDark = darkTheme)
+    val composeColorScheme = colorScheme.toComposeColorScheme(isDark = darkTheme)
+
+    return remember(composeColorScheme, prismThemeProfile, darkTheme) {
+        composeColorScheme.applyPrismProfile(
+            profile = prismThemeProfile,
+            darkTheme = darkTheme,
+        )
+    }
+}
+
+private fun ColorScheme.applyPrismProfile(
+    profile: PrismBrand.ThemeProfile,
+    darkTheme: Boolean,
+): ColorScheme {
+    return when {
+        profile == PrismBrand.ThemeProfile.AMOLED && darkTheme -> copy(
+            background = androidx.compose.ui.graphics.Color.Black,
+            surface = androidx.compose.ui.graphics.Color.Black,
+            surfaceDim = androidx.compose.ui.graphics.Color.Black,
+            surfaceContainerLowest = androidx.compose.ui.graphics.Color.Black,
+            surfaceContainerLow = androidx.compose.ui.graphics.Color(0xFF050505),
+            surfaceContainer = androidx.compose.ui.graphics.Color(0xFF080808),
+            surfaceContainerHigh = androidx.compose.ui.graphics.Color(0xFF0C0C0C),
+            surfaceContainerHighest = androidx.compose.ui.graphics.Color(0xFF121212),
+        )
+
+        profile == PrismBrand.ThemeProfile.GLASS -> copy(
+            background = background.copy(alpha = 0.94f),
+            surface = surface.copy(alpha = 0.84f),
+            surfaceVariant = surfaceVariant.copy(alpha = 0.76f),
+            surfaceContainerLowest = surfaceContainerLowest.copy(alpha = 0.72f),
+            surfaceContainerLow = surfaceContainerLow.copy(alpha = 0.76f),
+            surfaceContainer = surfaceContainer.copy(alpha = 0.80f),
+            surfaceContainerHigh = surfaceContainerHigh.copy(alpha = 0.84f),
+            surfaceContainerHighest = surfaceContainerHighest.copy(alpha = 0.88f),
+        )
+
+        else -> this
+    }
 }
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
