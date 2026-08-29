@@ -63,6 +63,7 @@ import app.lawnchair.preferences2.firstCached
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.OverflowMenuGrouped
 import app.lawnchair.ui.preferences.components.AnnouncementPreference
+import app.lawnchair.ui.preferences.components.PrismDashboardHeader
 import app.lawnchair.ui.preferences.components.controls.PreferenceCategory
 import app.lawnchair.ui.preferences.components.controls.WarningPreference
 import app.lawnchair.ui.preferences.components.layout.ClickableIcon
@@ -118,6 +119,8 @@ fun PreferencesDashboard(
         backArrowVisible = false,
         actions = { PreferencesOverflowMenu(currentRoute = currentRoute, onNavigate = onNavigate) },
     ) {
+        PrismDashboardHeader()
+
         AnnouncementPreference()
 
         if (BuildConfig.APPLICATION_ID.contains("nightly") || BuildConfig.DEBUG) {

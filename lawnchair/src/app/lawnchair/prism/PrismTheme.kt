@@ -21,8 +21,11 @@ object PrismTheme {
     ): Int {
         return when (profile) {
             PrismBrand.ThemeProfile.VIBRANT -> vibrant(color)
+
             PrismBrand.ThemeProfile.PASTEL -> pastel(color)
+
             PrismBrand.ThemeProfile.GLASS -> ColorUtils.blendARGB(color, Color.WHITE, 0.18f)
+
             PrismBrand.ThemeProfile.SYSTEM,
             PrismBrand.ThemeProfile.WALLPAPER,
             PrismBrand.ThemeProfile.AMOLED,

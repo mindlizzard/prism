@@ -819,4 +819,16 @@
     <string name="lawnchair_actions">Acties</string>
     <string name="lawnchair_action_failed">Actie activeren mislukt</string>
     <string name="please_wait">Wachten a.u.b...</string>
+
+    <!-- Prism visuele identiteit -->
+    <string name="prism_tagline">Android in jouw kleuren.</string>
+    <string name="prism_theme_engine_active">%1$s-thema • Actief</string>
+    <string name="prism_theme_label">Prism-thema</string>
+    <string name="prism_theme_system">Systeem</string>
+    <string name="prism_theme_wallpaper">Achtergrond</string>
+    <string name="prism_theme_vibrant">Levendig</string>
+    <string name="prism_theme_pastel">Pastel</string>
+    <string name="prism_theme_amoled">AMOLED</string>
+    <string name="prism_theme_glass">Glas</string>
+    <string name="prism_theme_custom">Aangepast</string>
 </resources>

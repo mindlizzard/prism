@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -52,13 +53,19 @@ fun PreferenceGroup(
     ) {
         PreferenceGroupHeading(heading)
 
-        Column(
+        Surface(
             modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .clip(MaterialTheme.shapes.large),
-            verticalArrangement = Arrangement.spacedBy(itemSpacing),
+                .padding(horizontal = 16.dp),
+            shape = MaterialTheme.shapes.extraLarge,
+            color = MaterialTheme.colorScheme.surfaceContainerLow,
+            tonalElevation = 1.dp,
         ) {
-            content()
+            Column(
+                modifier = Modifier.clip(MaterialTheme.shapes.extraLarge),
+                verticalArrangement = Arrangement.spacedBy(itemSpacing),
+            ) {
+                content()
+            }
         }
         PreferenceGroupDescription(description = description, showDescription = showDescription)
     }

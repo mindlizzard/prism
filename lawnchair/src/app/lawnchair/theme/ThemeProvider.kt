@@ -8,10 +8,10 @@ import android.os.Handler
 import android.os.Looper
 import android.os.PatternMatcher
 import androidx.core.graphics.ColorUtils
-import app.lawnchair.prism.PrismBrand
-import app.lawnchair.prism.PrismTheme
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
+import app.lawnchair.prism.PrismBrand
+import app.lawnchair.prism.PrismTheme
 import app.lawnchair.theme.color.AndroidColor
 import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.theme.color.ColorStyle
@@ -141,9 +141,13 @@ class ThemeProvider @Inject constructor(
     private val selectedSeedColor: Int
         get() = when (val option = accentColor) {
             is ColorOption.SystemAccent -> context.getSystemAccent(darkTheme = false)
-            is ColorOption.WallpaperPrimary -> wallpaperManager.wallpaperColors?.primaryColor
-                ?: ColorOption.LawnchairBlue.color
+
+            is ColorOption.WallpaperPrimary ->
+                wallpaperManager.wallpaperColors?.primaryColor
+                    ?: ColorOption.LawnchairBlue.color
+
             is ColorOption.CustomColor -> option.color
+
             else -> ColorOption.LawnchairBlue.color
         }
 
@@ -165,6 +169,7 @@ class ThemeProvider @Inject constructor(
         Utilities.ATLEAST_S -> colorSchemeMap.getOrPut(Pair(0, Style.TONAL_SPOT)) {
             SystemColorScheme(context)
         }
+
         else -> getColorScheme(context.getSystemAccent(darkTheme = false), colorStyle.style)
     }
 

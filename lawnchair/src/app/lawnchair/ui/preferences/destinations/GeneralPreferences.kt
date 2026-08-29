@@ -52,6 +52,8 @@ import app.lawnchair.ui.preferences.components.notificationServiceEnabled
 import app.lawnchair.ui.preferences.data.liveinfo.liveInformationManager
 import app.lawnchair.ui.preferences.navigation.GeneralIconPack
 import app.lawnchair.ui.preferences.navigation.GeneralIconShape
+import app.lawnchair.ui.theme.PrismThemeProfileSwatch
+import app.lawnchair.ui.theme.prismThemeProfileLabel
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -243,17 +245,8 @@ private fun PrismThemeProfilePreference(
         PrismBrand.ThemeProfile.values().map { profile ->
             ListPreferenceEntry(
                 value = profile,
-                label = {
-                    when (profile) {
-                        PrismBrand.ThemeProfile.SYSTEM -> "System"
-                        PrismBrand.ThemeProfile.WALLPAPER -> "Wallpaper"
-                        PrismBrand.ThemeProfile.VIBRANT -> "Vibrant"
-                        PrismBrand.ThemeProfile.PASTEL -> "Pastel"
-                        PrismBrand.ThemeProfile.AMOLED -> "AMOLED"
-                        PrismBrand.ThemeProfile.GLASS -> "Glass"
-                        PrismBrand.ThemeProfile.CUSTOM -> "Custom"
-                    }
-                },
+                label = { prismThemeProfileLabel(profile) },
+                endWidget = { PrismThemeProfileSwatch(profile = profile) },
             )
         }
     }
@@ -261,7 +254,7 @@ private fun PrismThemeProfilePreference(
     ListPreference(
         adapter = adapter,
         entries = entries,
-        label = "Prism theme",
+        label = stringResource(id = R.string.prism_theme_label),
         modifier = modifier,
     )
 }
