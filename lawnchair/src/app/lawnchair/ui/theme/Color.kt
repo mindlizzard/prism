@@ -8,15 +8,14 @@ import androidx.annotation.ColorInt
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.core.graphics.ColorUtils
-import app.lawnchair.theme.UiColorMode
-import app.lawnchair.theme.color.tokens.ColorTokens
+import app.lawnchair.prism.PrismTheme
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.Themes
 
 @JvmOverloads
 fun Context.getAccentColor(darkTheme: Boolean = Themes.getAttrBoolean(this, R.attr.isMainColorDark)): Int {
-    return ColorTokens.ColorAccent.resolveColor(this, if (darkTheme) UiColorMode.Dark else UiColorMode.Light)
+    return PrismTheme.accent(this, darkTheme = darkTheme)
 }
 
 @ColorInt

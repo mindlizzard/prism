@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Upper-left crystal face -->
+    <path
+        android:fillColor="#56E0FF"
+        android:pathData="M54,22 L29,43 L54,53 Z" />
+
+    <!-- Upper-right crystal face -->
+    <path
+        android:fillColor="#B96CFF"
+        android:pathData="M54,22 L79,43 L54,53 Z" />
+
+    <!-- Lower-left crystal face -->
+    <path
+        android:fillColor="#3D7CFF"
+        android:pathData="M29,43 L38,80 L54,53 Z" />
+
+    <!-- Lower-right crystal face -->
+    <path
+        android:fillColor="#7B4DFF"
+        android:pathData="M79,43 L70,80 L54,53 Z" />
+
+    <!-- Bottom crystal face -->
+    <path
+        android:fillColor="#FF5AC8"
+        android:pathData="M38,80 L70,80 L54,53 Z" />
+
+    <!-- Glass highlight -->
+    <path
+        android:fillColor="#99FFFFFF"
+        android:pathData="M54,22 L54,53 L43,43 Z" />
+
+</vector>
