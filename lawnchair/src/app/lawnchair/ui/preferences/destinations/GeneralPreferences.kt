@@ -16,6 +16,7 @@
 
 package app.lawnchair.ui.preferences.destinations
 
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -28,6 +29,7 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.preferenceManager2
+import app.lawnchair.prism.PrismBrand
 import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.theme.color.ColorStyle
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
@@ -191,6 +193,9 @@ fun GeneralPreferences(modifier: Modifier = Modifier) {
             !Utilities.ATLEAST_S
 
         PreferenceGroup(heading = stringResource(id = R.string.colors)) {
+            PrismThemeProfilePreference(
+                prefs2.prismThemeProfile.getAdapter(),
+            )
             ThemePreference()
             ColorPreference(preference = prefs2.accentColor)
             ExpandAndShrink(visible = showColorStyle) {
@@ -228,6 +233,40 @@ fun GeneralPreferences(modifier: Modifier = Modifier) {
             }
         }
     }
+}
+
+@Composable
+private fun PrismThemeProfilePreference(
+    adapter: PreferenceAdapter<PrismBrand.ThemeProfile>,
+    modifier: Modifier = Modifier,
+) {
+    val entries = remember {
+        PrismBrand.ThemeProfile.values().map { profile ->
+            ListPreferenceEntry(
+                value = profile,
+                label = {
+                    Text(
+                        when (profile) {
+                            PrismBrand.ThemeProfile.SYSTEM -> "System"
+                            PrismBrand.ThemeProfile.WALLPAPER -> "Wallpaper"
+                            PrismBrand.ThemeProfile.VIBRANT -> "Vibrant"
+                            PrismBrand.ThemeProfile.PASTEL -> "Pastel"
+                            PrismBrand.ThemeProfile.AMOLED -> "AMOLED"
+                            PrismBrand.ThemeProfile.GLASS -> "Glass"
+                            PrismBrand.ThemeProfile.CUSTOM -> "Custom"
+                        },
+                    )
+                },
+            )
+        }
+    }
+
+    ListPreference(
+        adapter = adapter,
+        entries = entries,
+        label = "Prism theme",
+        modifier = modifier,
+    )
 }
 
 @Composable

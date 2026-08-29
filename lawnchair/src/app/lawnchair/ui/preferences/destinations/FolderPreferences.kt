@@ -61,6 +61,27 @@ fun FolderPreferences(
                 },
             )
             ColorPreference(preference = prefs2.folderColor)
+
+            val prismLargeFolderAdapter =
+                prefs2.prismLargeFolderPreview.getAdapter()
+
+            SwitchPreference(
+                adapter = prismLargeFolderAdapter,
+                label = "Grote Prism-folder (beta)",
+                description = "Vergroot de folder en de iconen op het startscherm.",
+            )
+
+            ExpandAndShrink(
+                visible = prismLargeFolderAdapter.state.value,
+            ) {
+                SliderPreference(
+                    label = "Foldergrootte",
+                    adapter = prefs2.prismFolderScale.getAdapter(),
+                    step = 0.05f,
+                    valueRange = 1f..1.35f,
+                    showAsPercentage = true,
+                )
+            }
             SliderPreference(
                 label = stringResource(id = R.string.folder_preview_bg_opacity_label),
                 adapter = prefs2.folderPreviewBackgroundOpacity.getAdapter(),

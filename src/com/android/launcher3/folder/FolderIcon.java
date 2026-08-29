@@ -50,6 +50,8 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import app.lawnchair.prism.PrismFolderStyle;
+
 import com.android.app.animation.Interpolators;
 import com.android.launcher3.Alarm;
 import com.android.launcher3.BubbleTextView;
@@ -204,6 +206,12 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
                 ? LayoutInflater.from(group.getContext())
                 : activity.getLayoutInflater();
         FolderIcon icon = (FolderIcon) inflater.inflate(resId, group, false);
+
+        if (PrismFolderStyle.isLargePreviewEnabled(icon.getContext())) {
+            float prismFolderScale = PrismFolderStyle.scale(icon.getContext());
+            icon.setScaleX(prismFolderScale);
+            icon.setScaleY(prismFolderScale);
+        }
 
         icon.setClipToPadding(false);
         icon.mFolderName = icon.findViewById(R.id.folder_icon_name);

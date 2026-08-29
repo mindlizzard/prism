@@ -38,6 +38,7 @@ import app.lawnchair.icons.CustomAdaptiveIconDrawable
 import app.lawnchair.icons.shape.IconShape
 import app.lawnchair.icons.shape.IconShapeManager
 import app.lawnchair.predictions.PredictionMode
+import app.lawnchair.prism.PrismBrand
 import app.lawnchair.preferences.PreferenceManager as LawnchairPreferenceManager
 import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.search.algorithms.LawnchairSearchAlgorithm
@@ -195,6 +196,18 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = context.resources.getBoolean(R.bool.config_default_always_reload_icons),
     )
 
+    val prismThemeProfile = preference(
+        key = stringPreferencesKey(name = "prism_theme_profile"),
+        defaultValue = PrismBrand.ThemeProfile.WALLPAPER,
+        parse = {
+            runCatching {
+                PrismBrand.ThemeProfile.valueOf(it)
+            }.getOrDefault(PrismBrand.ThemeProfile.WALLPAPER)
+        },
+        save = { it.name },
+        onSet = { reloadHelper.restart() },
+    )
+
     val colorStyle = preference(
         key = stringPreferencesKey("color_style"),
         defaultValue = ColorStyle.fromString("tonal_spot"),
@@ -277,6 +290,19 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadHelper.reloadGrid() },
         defaultValue = ColorOption.fromString(context.getString(R.string.config_default_folder_color)),
     )
+
+    val prismLargeFolderPreview = preference(
+        key = booleanPreferencesKey(name = "prism_large_folder_preview"),
+        defaultValue = false,
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
+    val prismFolderScale = preference(
+        key = floatPreferencesKey(name = "prism_folder_scale"),
+        defaultValue = 1.18f,
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
 
     val showNotificationCount = preference(
         key = booleanPreferencesKey(name = "show_notification_count"),

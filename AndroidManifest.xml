@@ -52,6 +52,9 @@
         -->
         <activity
             android:name="app.lawnchair.LawnchairLauncher"
+            android:icon="@drawable/ic_launcher_home"
+            android:roundIcon="@drawable/ic_launcher_home"
+            android:label="@string/derived_app_name"
             android:launchMode="singleTask"
             android:clearTaskOnLaunch="true"
             android:stateNotNeeded="true"
