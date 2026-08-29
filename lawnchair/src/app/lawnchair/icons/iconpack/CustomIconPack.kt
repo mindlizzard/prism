@@ -50,6 +50,16 @@ class CustomIconPack(context: Context, packPackageName: String) : IconPack(conte
     override fun getCalendars(): MutableSet<ComponentName> = calendarMap.keys
     override fun getClocks(): MutableSet<ComponentName> = clockMap.keys
 
+    fun getRepresentativeIcons(iconDpi: Int, limit: Int): List<Drawable> {
+        loadBlocking()
+        return componentMap.values
+            .asSequence()
+            .distinct()
+            .mapNotNull { getIcon(it, iconDpi) }
+            .take(limit)
+            .toList()
+    }
+
     override fun getIcon(iconEntry: IconEntry, iconDpi: Int): Drawable? {
         val id = getDrawableId(iconEntry.name)
         if (id == 0) return null

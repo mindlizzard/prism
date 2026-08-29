@@ -27,11 +27,14 @@ import android.util.Log
 import androidx.core.content.getSystemService
 import androidx.core.graphics.drawable.toDrawable
 import app.lawnchair.data.iconoverride.IconOverrideRepository
+import app.lawnchair.icons.iconpack.CustomIconPack
 import app.lawnchair.icons.iconpack.IconPack
 import app.lawnchair.icons.iconpack.IconPackProvider
 import app.lawnchair.icons.picker.IconEntry
 import app.lawnchair.icons.picker.IconType
 import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.prism.PrismForgeEngine
+import app.lawnchair.prism.PrismForgeStyle
 import app.lawnchair.util.MultiSafeCloseable
 import app.lawnchair.util.isPackageInstalled
 import app.lawnchair.util.requireSystemService
@@ -63,6 +66,7 @@ class LawnchairIconProvider @Inject constructor(
 
     private val iconPackProvider = IconPackProvider.INSTANCE.get(context)
     private val overrideRepo = IconOverrideRepository.INSTANCE.get(context)
+    private val prismForge = PrismForgeEngine(context)
 
     private val iconPack
         get() = iconPackProvider.getIconPack(iconPackPref.get())?.apply { loadBlocking() }
@@ -209,8 +213,33 @@ class LawnchairIconProvider @Inject constructor(
         }
 
         val iconPackIcon = iconPackEntry?.let { iconPackProvider.getDrawable(it, iconDpi, user) }
+        val systemIcon = if (themedIcon == null && iconPackIcon == null) {
+            super.getIcon(info, appInfo, iconDpi)
+        } else {
+            null
+        }
+        val forgedIcon = if (
+            systemIcon != null &&
+            iconEntry == null &&
+            prefs.prismForgeEnabled.get()
+        ) {
+            val selectedPack = iconPack
+            if (selectedPack is CustomIconPack) {
+                prismForge.forge(
+                    source = systemIcon,
+                    iconPack = selectedPack,
+                    iconDpi = iconDpi,
+                    style = PrismForgeStyle.fromValue(prefs.prismForgeStyle.get()),
+                )
+            } else {
+                null
+            }
+        } else {
+            null
+        }
 
-        return themedIcon ?: iconPackIcon ?: super.getIcon(info, appInfo, iconDpi)
+        return themedIcon ?: iconPackIcon ?: forgedIcon ?: systemIcon
+            ?: super.getIcon(info, appInfo, iconDpi)
     }
 
     override fun getStateForApp(info: ApplicationInfo?): String {
@@ -228,6 +257,8 @@ class LawnchairIconProvider @Inject constructor(
             "dti=${prefs.drawerThemedIcons.get()}," +
             "fm=${prefs.forceIconMonochrome.get()}," +
             "tb=${prefs.tintIconPackBackgrounds.get()}," +
+            "pf=${prefs.prismForgeEnabled.get()}," +
+            "pfs=${prefs.prismForgeStyle.get()}," +
             "ov=$overrideState"
     }
 

@@ -61,6 +61,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
+import app.lawnchair.prism.PrismForgeStyle
 import app.lawnchair.ui.preferences.LocalPreferenceInteractor
 import app.lawnchair.ui.preferences.components.DummyLauncherBox
 import app.lawnchair.ui.preferences.components.DummyLauncherLayout
@@ -131,6 +132,8 @@ fun IconPackPreferences(
     val drawerThemedIconsEnabled = drawerThemedIconsAdapter.state.value
     val tintIconpack = prefs.tintIconPackBackgrounds.getAdapter()
     val forceMonochromeAdapter = prefs.forceIconMonochrome.getAdapter()
+    val prismForgeEnabledAdapter = prefs.prismForgeEnabled.getAdapter()
+    val prismForgeStyleAdapter = prefs.prismForgeStyle.getAdapter()
 
     PreferenceLayout(
         label = stringResource(id = R.string.icon_style_label),
@@ -156,7 +159,14 @@ fun IconPackPreferences(
                             wallpaper = wallpaper,
                             modifier = Modifier.fillMaxSize(),
                         )
-                        key(iconPackAdapter.state.value, themedIconPackAdapter.state.value, themedIconsAdapter.state.value, tintIconpack.state.value) {
+                        key(
+                            iconPackAdapter.state.value,
+                            themedIconPackAdapter.state.value,
+                            themedIconsAdapter.state.value,
+                            tintIconpack.state.value,
+                            prismForgeEnabledAdapter.state.value,
+                            prismForgeStyleAdapter.state.value,
+                        ) {
                             DummyLauncherLayout(
                                 idp = invariantDeviceProfile(),
                                 modifier = Modifier.fillMaxSize(),
@@ -214,6 +224,37 @@ fun IconPackPreferences(
                                 adapter = iconPackAdapter,
                                 false,
                             )
+                            PreferenceGroup {
+                                val hasIconPack = iconPackAdapter.state.value.isNotEmpty()
+                                SwitchPreference(
+                                    label = stringResource(id = R.string.prism_forge_title),
+                                    description = stringResource(
+                                        id = if (hasIconPack) {
+                                            R.string.prism_forge_description
+                                        } else {
+                                            R.string.prism_forge_select_pack
+                                        },
+                                    ),
+                                    adapter = prismForgeEnabledAdapter,
+                                    enabled = hasIconPack,
+                                )
+                                ExpandAndShrink(
+                                    visible = hasIconPack && prismForgeEnabledAdapter.state.value,
+                                ) {
+                                    ListPreference(
+                                        adapter = prismForgeStyleAdapter,
+                                        entries = PrismForgeStyle.entries.map { style ->
+                                            ListPreferenceEntry(
+                                                value = style.value,
+                                                label = {
+                                                    stringResource(id = style.labelResource)
+                                                },
+                                            )
+                                        },
+                                        label = stringResource(id = R.string.prism_forge_style),
+                                    )
+                                }
+                            }
                         }
 
                         1 -> {

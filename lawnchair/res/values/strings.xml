@@ -1091,4 +1091,14 @@
     <string name="prism_folder_size_immersive">3 × 3 · Immersive</string>
     <string name="prism_folder_resized">Folder resized to %1$d × %2$d</string>
     <string name="prism_folder_no_space">Not enough free space around this folder</string>
+
+    <!-- Prism Forge -->
+    <string name="prism_forge_title">Prism Forge</string>
+    <string name="prism_forge_description">Automatically styles apps that are missing from the selected icon pack</string>
+    <string name="prism_forge_select_pack">Select an icon pack to forge its missing icons</string>
+    <string name="prism_forge_style">Fallback style</string>
+    <string name="prism_forge_style_auto">Auto-match icon pack</string>
+    <string name="prism_forge_style_material">Material You</string>
+    <string name="prism_forge_style_monochrome">Monochrome</string>
+    <string name="prism_forge_style_glass">Glass</string>
 </resources>

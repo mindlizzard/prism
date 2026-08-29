@@ -842,4 +842,14 @@
     <string name="prism_folder_size_immersive">3 × 3 · Meeslepend</string>
     <string name="prism_folder_resized">Map aangepast naar %1$d × %2$d</string>
     <string name="prism_folder_no_space">Niet genoeg vrije ruimte rond deze map</string>
+
+    <!-- Prism Forge -->
+    <string name="prism_forge_title">Prism Forge</string>
+    <string name="prism_forge_description">Geeft apps die ontbreken in het gekozen icoonpakket automatisch een passende stijl</string>
+    <string name="prism_forge_select_pack">Kies eerst een icoonpakket om ontbrekende iconen te smeden</string>
+    <string name="prism_forge_style">Reservestijl</string>
+    <string name="prism_forge_style_auto">Automatisch passend</string>
+    <string name="prism_forge_style_material">Material You</string>
+    <string name="prism_forge_style_monochrome">Monochroom</string>
+    <string name="prism_forge_style_glass">Glas</string>
 </resources>
