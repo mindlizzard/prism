@@ -23,26 +23,35 @@ public class ClippedFolderIconLayoutRule {
     private float[] mTmpPoint = new float[2];
 
     private float mAvailableSpace;
+    private float mAvailableSpaceX;
+    private float mAvailableSpaceY;
     private float mRadius;
     private float mIconSize;
     private boolean mIsRtl;
     private float mBaselineIconScale;
     private int mNumFolderColumns;
+    private boolean mUsePrismGrid;
+    private boolean mUseWidePrismGrid;
 
     /**
      * initialize the layout rule
      */
-    public void init(int availableSpace, float intrinsicIconSize, boolean rtl,
+    public void init(int availableSpaceX, int availableSpaceY, float intrinsicIconSize, boolean rtl,
             int numFolderColumns) {
-        mAvailableSpace = availableSpace;
+        mAvailableSpaceX = availableSpaceX;
+        mAvailableSpaceY = availableSpaceY;
+        mAvailableSpace = Math.min(availableSpaceX, availableSpaceY);
         mRadius = (
                 Flags.enableLauncherIconShapes()
                         ? ITEM_RADIUS_SCALE_FACTOR_SHAPES
-                        : ITEM_RADIUS_SCALE_FACTOR) * availableSpace / 2f;
+                        : ITEM_RADIUS_SCALE_FACTOR) * mAvailableSpace / 2f;
         mIconSize = intrinsicIconSize;
         mIsRtl = rtl;
-        mBaselineIconScale = availableSpace / intrinsicIconSize;
+        mBaselineIconScale = mAvailableSpace / intrinsicIconSize;
         mNumFolderColumns = numFolderColumns;
+        mUsePrismGrid = availableSpaceX != availableSpaceY
+                || Math.max(availableSpaceX, availableSpaceY) > intrinsicIconSize * 1.35f;
+        mUseWidePrismGrid = availableSpaceX > availableSpaceY * 1.35f;
     }
 
     /**
@@ -57,6 +66,25 @@ public class ClippedFolderIconLayoutRule {
         float totalScale = scaleForItem(curNumItems, 0);
         float transX;
         float transY;
+
+        if (mUsePrismGrid) {
+            if (index < 0) {
+                index = Math.max(0, Math.min(curNumItems, MAX_NUM_ITEMS_IN_PREVIEW) - 1);
+            }
+            if (index >= MAX_NUM_ITEMS_IN_PREVIEW) {
+                mTmpPoint[0] = mAvailableSpaceX / 2 - (mIconSize * totalScale) / 2;
+                mTmpPoint[1] = mAvailableSpaceY / 2 - (mIconSize * totalScale) / 2;
+            } else {
+                getPrismGridPosition(index, curNumItems, mTmpPoint);
+            }
+            transX = mTmpPoint[0];
+            transY = mTmpPoint[1];
+            if (params == null) {
+                return new PreviewItemDrawingParams(transX, transY, totalScale);
+            }
+            params.update(transX, transY, totalScale);
+            return params;
+        }
 
         if (index == EXIT_INDEX) {
             // 0 1 * <-- Exit position (row 0, col 2)
@@ -98,7 +126,9 @@ public class ClippedFolderIconLayoutRule {
         float transX;
         float transY;
 
-        if (numItemsInPage <= MAX_NUM_ITEMS_IN_PREVIEW) {
+        if (mUsePrismGrid) {
+            getPrismGridPosition(index, numItemsInPage, mTmpPoint);
+        } else if (numItemsInPage <= MAX_NUM_ITEMS_IN_PREVIEW) {
             getPosition(index, numItemsInPage, mTmpPoint);
         } else {
             getGridPosition(index / mNumFolderColumns, index % mNumFolderColumns, mTmpPoint);
@@ -135,6 +165,25 @@ public class ClippedFolderIconLayoutRule {
 
         result[0] = left + (col * dx);
         result[1] = top + (row * dy);
+    }
+
+    private void getPrismGridPosition(int index, int numItems, float[] result) {
+        int visibleItems = Math.max(1, Math.min(numItems, MAX_NUM_ITEMS_IN_PREVIEW));
+        int columns = mUseWidePrismGrid ? visibleItems : Math.min(2, visibleItems);
+        int rows = (int) Math.ceil((double) visibleItems / columns);
+        int safeIndex = Math.max(0, Math.min(index, visibleItems - 1));
+        int row = safeIndex / columns;
+        int column = safeIndex % columns;
+        if (mIsRtl) {
+            column = columns - column - 1;
+        }
+
+        float cellWidth = mAvailableSpaceX / columns;
+        float cellHeight = mAvailableSpaceY / rows;
+        float iconScale = scaleForItem(visibleItems, 0);
+        float scaledIconSize = mIconSize * iconScale;
+        result[0] = column * cellWidth + (cellWidth - scaledIconSize) / 2;
+        result[1] = row * cellHeight + (cellHeight - scaledIconSize) / 2;
     }
 
     private void getPosition(int index, int curNumItems, float[] result) {
@@ -196,6 +245,15 @@ public class ClippedFolderIconLayoutRule {
      * @return scale for icons in Folder
      */
     public float scaleForItem(int numItems, int page) {
+        if (mUsePrismGrid) {
+            int visibleItems = Math.max(1, Math.min(numItems, MAX_NUM_ITEMS_IN_PREVIEW));
+            int columns = mUseWidePrismGrid ? visibleItems : Math.min(2, visibleItems);
+            int rows = (int) Math.ceil((double) visibleItems / columns);
+            float cellWidth = mAvailableSpaceX / columns;
+            float cellHeight = mAvailableSpaceY / rows;
+            float targetSize = Math.min(cellWidth, cellHeight) * 0.68f;
+            return Math.min(1.55f, targetSize / mIconSize);
+        }
         float scale;
         if (page > 0) {
             scale = MIN_SCALE;

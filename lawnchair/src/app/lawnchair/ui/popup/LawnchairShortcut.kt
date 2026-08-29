@@ -24,14 +24,18 @@ import app.lawnchair.LawnchairLauncher
 import app.lawnchair.override.CustomizeAppDialog
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
+import app.lawnchair.prism.PrismFolderResizer
+import app.lawnchair.prism.PrismFolderSize
 import app.lawnchair.ui.preferences.PreferenceActivity
 import app.lawnchair.ui.preferences.navigation.AppDrawerAppListToFolder
 import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.AbstractFloatingView
+import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_TASK
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.android.launcher3.dragndrop.DragOptions
 import com.android.launcher3.folder.FolderIcon
 import com.android.launcher3.graphics.ThemeManager
 import com.android.launcher3.icons.LauncherIcons
@@ -39,6 +43,7 @@ import com.android.launcher3.logging.StatsLogManager
 import com.android.launcher3.model.data.AppInfo as ModelAppInfo
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.popup.SystemShortcut
+import com.android.launcher3.touch.ItemLongClickListener
 import com.android.launcher3.util.ApplicationInfoWrapper
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.PackageManagerHelper
@@ -85,6 +90,82 @@ class LawnchairShortcut {
                 ),
                 true,
             ) != null
+        }
+
+        fun showWorkspaceFolderPopup(
+            launcher: LawnchairLauncher,
+            folderIcon: FolderIcon,
+        ): Boolean {
+            if (folderIcon.mInfo.container != CONTAINER_DESKTOP) return false
+            if (PreferenceManager2.getInstance(launcher).lockHomeScreen.firstCached()) return false
+
+            val bounds = Rect()
+            launcher.dragLayer.getDescendantRectRelativeToSelf(folderIcon, bounds)
+            return OptionsPopupView.show<LawnchairLauncher>(
+                launcher,
+                RectF(bounds),
+                listOf(
+                    OptionsPopupView.OptionItem(
+                        launcher,
+                        R.string.prism_folder_size,
+                        R.drawable.ic_edit,
+                        StatsLogManager.LauncherEvent.IGNORE,
+                    ) {
+                        showFolderSizeDialog(launcher, folderIcon)
+                        true
+                    },
+                    OptionsPopupView.OptionItem(
+                        launcher,
+                        R.string.action_move,
+                        R.drawable.ic_folder,
+                        StatsLogManager.LauncherEvent.IGNORE,
+                    ) {
+                        folderIcon.post {
+                            ItemLongClickListener.beginDrag(
+                                folderIcon,
+                                launcher,
+                                folderIcon.mInfo,
+                                DragOptions(),
+                            )
+                        }
+                        true
+                    },
+                ),
+                true,
+            ) != null
+        }
+
+        private fun showFolderSizeDialog(
+            launcher: LawnchairLauncher,
+            folderIcon: FolderIcon,
+        ) {
+            val sizes = PrismFolderSize.values()
+            val labels = sizes.map { launcher.getString(it.labelResource) }.toTypedArray()
+            val currentSize = PrismFolderSize.fromSpans(
+                folderIcon.mInfo.spanX,
+                folderIcon.mInfo.spanY,
+            )
+            val checkedItem = sizes.indexOf(currentSize)
+
+            AlertDialog.Builder(launcher)
+                .setTitle(R.string.prism_folder_size)
+                .setSingleChoiceItems(labels, checkedItem) { dialog, index ->
+                    val size = sizes[index]
+                    val resized = PrismFolderResizer.resize(launcher, folderIcon, size)
+                    val message = if (resized) {
+                        launcher.getString(
+                            R.string.prism_folder_resized,
+                            size.spanX,
+                            size.spanY,
+                        )
+                    } else {
+                        launcher.getString(R.string.prism_folder_no_space)
+                    }
+                    Toast.makeText(launcher, message, Toast.LENGTH_SHORT).show()
+                    dialog.dismiss()
+                }
+                .setNegativeButton(android.R.string.cancel, null)
+                .show()
         }
 
         val CUSTOMIZE =

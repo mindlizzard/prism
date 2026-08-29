@@ -279,6 +279,17 @@ class LawnchairLauncher : QuickstepLauncher() {
         }
     }
 
+    override fun getWorkspaceChildOnLongClickListener(): View.OnLongClickListener {
+        val defaultListener = super.getWorkspaceChildOnLongClickListener()
+        return View.OnLongClickListener { view ->
+            if (view is FolderIcon && LawnchairShortcut.showWorkspaceFolderPopup(this, view)) {
+                true
+            } else {
+                defaultListener.onLongClick(view)
+            }
+        }
+    }
+
     override fun getSupportedShortcuts(container: Int): Stream<SystemShortcut.Factory<*>> = Stream.concat(
         super.getSupportedShortcuts(container),
         Stream.concat(

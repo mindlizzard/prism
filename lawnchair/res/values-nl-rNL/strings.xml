@@ -831,4 +831,15 @@
     <string name="prism_theme_amoled">AMOLED</string>
     <string name="prism_theme_glass">Glas</string>
     <string name="prism_theme_custom">Aangepast</string>
+
+    <!-- Prism-mappen -->
+    <string name="prism_folder_options">Mapopties</string>
+    <string name="prism_folder_size">Mapformaat</string>
+    <string name="prism_folder_size_compact">1 × 1 · Compact</string>
+    <string name="prism_folder_size_wide">2 × 1 · Breed</string>
+    <string name="prism_folder_size_large">2 × 2 · Groot</string>
+    <string name="prism_folder_size_showcase">3 × 2 · Uitgelicht</string>
+    <string name="prism_folder_size_immersive">3 × 3 · Meeslepend</string>
+    <string name="prism_folder_resized">Map aangepast naar %1$d × %2$d</string>
+    <string name="prism_folder_no_space">Niet genoeg vrije ruimte rond deze map</string>
 </resources>

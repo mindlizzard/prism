@@ -37,6 +37,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RadialGradient;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Region;
 import android.graphics.Shader;
 import android.util.Property;
@@ -99,8 +100,11 @@ public class PreviewBackground extends DelegatedCellDrawing {
     private View mInvalidateDelegate;
 
     int previewSize;
+    int previewWidth;
+    int previewHeight;
     int basePreviewOffsetX;
     int basePreviewOffsetY;
+    private boolean mIsPrismExpanded;
 
     private CellLayout mDrawingDelegate;
 
@@ -197,17 +201,39 @@ public class PreviewBackground extends DelegatedCellDrawing {
         ta.recycle();
 
         DeviceProfile grid = activity.getDeviceProfile();
+        mIsPrismExpanded = false;
         // Lawnchair: Find the correct icon size depending on which parent owned them
         if (invalidateDelegate instanceof FolderIcon && ((FolderIcon) invalidateDelegate).isInAppDrawer()) {
             int allAppsIconSize = grid.getAllAppsProfile().getIconSizePx();
             previewSize = Math.round(allAppsIconSize * ICON_VISIBLE_AREA_FACTOR);
+            previewWidth = previewSize;
+            previewHeight = previewSize;
             basePreviewOffsetX = (availableSpaceX - previewSize) / 2;
             basePreviewOffsetY = topPadding + (allAppsIconSize - previewSize) / 2;
         } else {
-            previewSize = grid.folderIconSizePx;
-
-            basePreviewOffsetX = (availableSpaceX - previewSize) / 2;
-            basePreviewOffsetY = topPadding + grid.folderIconOffsetYPx;
+            FolderIcon folderIcon = invalidateDelegate instanceof FolderIcon
+                    ? (FolderIcon) invalidateDelegate : null;
+            mIsPrismExpanded = folderIcon != null && folderIcon.isPrismExpanded();
+            if (mIsPrismExpanded) {
+                int margin = Math.round(8 * context.getResources().getDisplayMetrics().density);
+                Paint.FontMetrics fontMetrics = folderIcon.getFolderName().getPaint()
+                        .getFontMetrics();
+                int labelHeight = (int) Math.ceil(fontMetrics.bottom - fontMetrics.top);
+                previewWidth = Math.max(grid.folderIconSizePx, availableSpaceX - (margin * 2));
+                previewHeight = Math.max(
+                        grid.folderIconSizePx,
+                        folderIcon.getMeasuredHeight() - topPadding - labelHeight
+                                - grid.iconDrawablePaddingPx - (margin * 2));
+                previewSize = Math.min(previewWidth, previewHeight);
+                basePreviewOffsetX = (availableSpaceX - previewWidth) / 2;
+                basePreviewOffsetY = topPadding + margin;
+            } else {
+                previewSize = grid.folderIconSizePx;
+                previewWidth = previewSize;
+                previewHeight = previewSize;
+                basePreviewOffsetX = (availableSpaceX - previewSize) / 2;
+                basePreviewOffsetY = topPadding + grid.folderIconOffsetYPx;
+            }
         }
 
         // Stroke width is 1dp
@@ -229,8 +255,8 @@ public class PreviewBackground extends DelegatedCellDrawing {
     void getBounds(Rect outBounds) {
         int top = basePreviewOffsetY;
         int left = basePreviewOffsetX;
-        int right = left + previewSize;
-        int bottom = top + previewSize;
+        int right = left + previewWidth;
+        int bottom = top + previewHeight;
         outBounds.set(left, top, right, bottom);
     }
 
@@ -243,11 +269,19 @@ public class PreviewBackground extends DelegatedCellDrawing {
     }
 
     int getOffsetX() {
-        return basePreviewOffsetX - (getScaledRadius() - getRadius());
+        return Math.round(basePreviewOffsetX - (getScaledWidth() - previewWidth) / 2f);
     }
 
     int getOffsetY() {
-        return basePreviewOffsetY - (getScaledRadius() - getRadius());
+        return Math.round(basePreviewOffsetY - (getScaledHeight() - previewHeight) / 2f);
+    }
+
+    private float getScaledWidth() {
+        return mScale * previewWidth;
+    }
+
+    private float getScaledHeight() {
+        return mScale * previewHeight;
     }
 
     /**
@@ -287,8 +321,23 @@ public class PreviewBackground extends DelegatedCellDrawing {
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(getBgColor());
 
-        getShape().drawShape(canvas, getOffsetX(), getOffsetY(), getScaledRadius(), mPaint);
+        drawPreviewShape(canvas, 0, mPaint);
         drawShadow(canvas);
+    }
+
+    private void drawPreviewShape(Canvas canvas, float inset, Paint paint) {
+        if (mIsPrismExpanded) {
+            float left = getOffsetX() + inset;
+            float top = getOffsetY() + inset;
+            float right = getOffsetX() + getScaledWidth() - inset;
+            float bottom = getOffsetY() + getScaledHeight() - inset;
+            float cornerRadius = Math.min(right - left, bottom - top) * 0.22f;
+            canvas.drawRoundRect(left, top, right, bottom, cornerRadius, cornerRadius, paint);
+        } else {
+            getShape().drawShape(
+                    canvas, getOffsetX() + inset, getOffsetY() + inset,
+                    getScaledRadius() - inset, paint);
+        }
     }
 
     private ShapeDelegate getShape() {
@@ -383,9 +432,7 @@ public class PreviewBackground extends DelegatedCellDrawing {
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeWidth(mStrokeWidth);
 
-        float inset = 1f;
-        getShape().drawShape(canvas,
-                getOffsetX() + inset, getOffsetY() + inset, getScaledRadius() - inset, mPaint);
+        drawPreviewShape(canvas, 1f, mPaint);
     }
 
     /**
@@ -397,13 +444,26 @@ public class PreviewBackground extends DelegatedCellDrawing {
 
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(color);
-        getShape().drawShape(canvas, getOffsetX(), getOffsetY(), getScaledRadius(), mPaint);
+        drawPreviewShape(canvas, 0, mPaint);
 
         mScale = originalScale;
     }
 
     public Path getClipPath() {
         mPath.reset();
+        if (mIsPrismExpanded) {
+            float left = getOffsetX();
+            float top = getOffsetY();
+            float right = left + getScaledWidth();
+            float bottom = top + getScaledHeight();
+            float cornerRadius = Math.min(right - left, bottom - top) * 0.22f;
+            mPath.addRoundRect(
+                    new RectF(left, top, right, bottom),
+                    cornerRadius,
+                    cornerRadius,
+                    Path.Direction.CW);
+            return mPath;
+        }
         float radius = getScaledRadius();
         if (!Flags.enableLauncherIconShapes()) {
             radius = radius * ICON_OVERLAP_FACTOR;

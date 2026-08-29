@@ -28,6 +28,7 @@ import android.text.TextUtils
 import android.util.Log
 import android.util.LongSparseArray
 import android.util.SparseArray
+import app.lawnchair.prism.PrismFolderSize
 import com.android.launcher3.Flags
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherSettings.Favorites
@@ -518,11 +519,15 @@ class WorkspaceItemProcessor(
         c.applyCommonProperties(collection)
         // Do not trim the folder label, as is was set by the user.
         collection.title = c.getString(c.mTitleIndex)
-        collection.spanX = 1
-        collection.spanY = 1
         if (collection is FolderInfo) {
+            val storedSpanX = c.spanX
+            val storedSpanY = c.spanY
+            collection.spanX = PrismFolderSize.normalizeSpanX(storedSpanX, storedSpanY)
+            collection.spanY = PrismFolderSize.normalizeSpanY(storedSpanX, storedSpanY)
             collection.options = c.options
         } else {
+            collection.spanX = 1
+            collection.spanY = 1
             // An app pair may be inside another folder, so it needs to preserve rank information.
             collection.rank = c.rank
         }

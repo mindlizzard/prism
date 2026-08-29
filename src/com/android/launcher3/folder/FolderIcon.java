@@ -207,7 +207,8 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
                 : activity.getLayoutInflater();
         FolderIcon icon = (FolderIcon) inflater.inflate(resId, group, false);
 
-        if (PrismFolderStyle.isLargePreviewEnabled(icon.getContext())) {
+        if (folderInfo.spanX == 1 && folderInfo.spanY == 1
+                && PrismFolderStyle.isLargePreviewEnabled(icon.getContext())) {
             float prismFolderScale = PrismFolderStyle.scale(icon.getContext());
             icon.setScaleX(prismFolderScale);
             icon.setScaleY(prismFolderScale);
@@ -645,8 +646,11 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        boolean prismExpanded = isPrismExpanded();
         boolean shouldCenterIcon = mActivity.getDeviceProfile().iconCenterVertically;
-        if (shouldCenterIcon) {
+        if (prismExpanded) {
+            setPadding(getPaddingLeft(), 0, getPaddingRight(), getPaddingBottom());
+        } else if (shouldCenterIcon) {
             int iconSize = mActivity.getDeviceProfile().iconSizePx;
             Paint.FontMetrics fm = mFolderName.getPaint().getFontMetrics();
             int cellHeightPx = iconSize + mFolderName.getCompoundDrawablePadding()
@@ -655,6 +659,26 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
                     - cellHeightPx) / 2, getPaddingRight(), getPaddingBottom());
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mFolderName.getLayoutParams();
+        int targetTopMargin = lp.topMargin;
+        if (prismExpanded) {
+            Paint.FontMetrics fm = mFolderName.getPaint().getFontMetrics();
+            int labelHeight = (int) Math.ceil(fm.bottom - fm.top);
+            targetTopMargin = Math.max(
+                    0, getMeasuredHeight() - labelHeight - getPaddingBottom());
+        } else if (!isInAppDrawer()) {
+            DeviceProfile grid = mActivity.getDeviceProfile();
+            targetTopMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
+        }
+        if (lp.topMargin != targetTopMargin) {
+            lp.topMargin = targetTopMargin;
+            mFolderName.setLayoutParams(lp);
+        }
+    }
+
+    public boolean isPrismExpanded() {
+        return !isInAppDrawer() && mInfo != null && (mInfo.spanX > 1 || mInfo.spanY > 1);
     }
 
     /** Sets the visibility of the icon's title text */

@@ -74,6 +74,7 @@ public class PreviewItemManager {
     // as member variables for shared usage and to avoid computation on each frame
     private float mIntrinsicIconSize = -1;
     private int mTotalWidth = -1;
+    private int mTotalHeight = -1;
     private int mPrevTopPadding = -1;
     private Drawable mReferenceDrawable = null;
 
@@ -111,7 +112,7 @@ public class PreviewItemManager {
                 ? ((AppPairIcon) destView).getIconDrawableArea().getDrawable()
                 : ((BubbleTextView) destView).getIcon();
         computePreviewDrawingParams(animateDrawable.getIntrinsicWidth(),
-                destView.getMeasuredWidth());
+                destView.getMeasuredWidth(), destView.getMeasuredHeight());
         mReferenceDrawable = animateDrawable;
         return animateDrawable;
     }
@@ -119,21 +120,24 @@ public class PreviewItemManager {
     public void recomputePreviewDrawingParams() {
         if (mReferenceDrawable != null) {
             computePreviewDrawingParams(mReferenceDrawable.getIntrinsicWidth(),
-                    mIcon.getMeasuredWidth());
+                    mIcon.getMeasuredWidth(), mIcon.getMeasuredHeight());
         }
     }
 
-    private void computePreviewDrawingParams(int drawableSize, int totalSize) {
-        if (mIntrinsicIconSize != drawableSize || mTotalWidth != totalSize ||
-                mPrevTopPadding != mIcon.getPaddingTop()) {
+    private void computePreviewDrawingParams(int drawableSize, int totalWidth, int totalHeight) {
+        if (mIntrinsicIconSize != drawableSize || mTotalWidth != totalWidth
+                || mTotalHeight != totalHeight
+                || mPrevTopPadding != mIcon.getPaddingTop()) {
             mIntrinsicIconSize = drawableSize;
-            mTotalWidth = totalSize;
+            mTotalWidth = totalWidth;
+            mTotalHeight = totalHeight;
             mPrevTopPadding = mIcon.getPaddingTop();
 
             mIcon.mBackground.setup(mIcon.getContext(), mIcon.mActivity, mIcon, mTotalWidth,
                     mIcon.getPaddingTop());
             mIcon.mPreviewLayoutRule.init(
-                    mIcon.mBackground.previewSize, mIntrinsicIconSize,
+                    mIcon.mBackground.previewWidth, mIcon.mBackground.previewHeight,
+                    mIntrinsicIconSize,
                     Utilities.isRtl(mIcon.getResources()),
                     mIcon.mActivity.getDeviceProfile().numFolderColumns
             );
@@ -156,9 +160,10 @@ public class PreviewItemManager {
         float iconSize = mIcon.mActivity.getDeviceProfile().iconSizePx;
 
         final float scale = iconSize / mReferenceDrawable.getIntrinsicWidth();
-        final float trans = (mIcon.mBackground.previewSize - iconSize) / 2;
+        final float transX = (mIcon.mBackground.previewWidth - iconSize) / 2;
+        final float transY = (mIcon.mBackground.previewHeight - iconSize) / 2;
 
-        params.update(trans, trans, scale);
+        params.update(transX, transY, scale);
         return params;
     }
 
