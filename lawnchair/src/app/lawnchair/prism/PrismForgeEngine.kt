@@ -13,7 +13,7 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.palette.graphics.Palette
 import app.lawnchair.icons.CustomAdaptiveIconDrawable
 import app.lawnchair.icons.iconpack.CustomIconPack
-import com.android.launcher3.graphics.ColorTokens
+import app.lawnchair.theme.color.tokens.ColorTokens
 import java.util.concurrent.ConcurrentHashMap
 
 class PrismForgeEngine(
