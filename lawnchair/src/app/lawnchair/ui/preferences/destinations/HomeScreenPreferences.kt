@@ -242,6 +242,7 @@ fun HomeScreenPreferences(
             SwitchPreference(
                 adapter = prefs2.allowWidgetOverlap.getAdapter(),
                 label = stringResource(id = R.string.allow_widget_overlap),
+                description = stringResource(id = R.string.prism_widget_stacks_description),
             )
             SwitchPreference(
                 adapter = prefs2.widgetUnlimitedSize.getAdapter(),

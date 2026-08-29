@@ -731,6 +731,11 @@
     <string name="prism_layout_showcase">Showcase</string>
     <string name="prism_layout_balanced">Balanced</string>
     <string name="prism_layout_compact">Compact</string>
+    <string name="prism_gesture_profiles">Prism gesture profiles</string>
+    <string name="prism_gesture_everyday">Everyday</string>
+    <string name="prism_gesture_power">Power</string>
+    <string name="prism_gesture_minimal">Minimal</string>
+    <string name="prism_gesture_icon_hint">Tip: long-press an app, choose Customize, and assign separate swipe actions to that icon.</string>
     <string name="home_screen_lock">Lock home screen</string>
     <string name="home_screen_unlock">Unlock home screen</string>
     <string name="home_screen_locked">Home screen is locked</string>
@@ -769,7 +774,8 @@
     <string name="color_dark">Dark</string>
 
     <string name="force_rounded_widgets">Rounded corners</string>
-    <string name="allow_widget_overlap">Allow overlap</string>
+    <string name="allow_widget_overlap">Widget stacks and overlap</string>
+    <string name="prism_widget_stacks_description">Place equal-sized widgets on the same cells, then swipe with two fingers up or down to cycle through the stack.</string>
 
     <string name="force_widget_resize_label">Enforce widget resizing</string>
     <string name="force_widget_resize_description">Allow resizing of widgets that are constrained to a specific size</string>

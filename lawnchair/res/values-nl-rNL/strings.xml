@@ -580,6 +580,11 @@
     <string name="prism_layout_showcase">Showcase</string>
     <string name="prism_layout_balanced">Gebalanceerd</string>
     <string name="prism_layout_compact">Compact</string>
+    <string name="prism_gesture_profiles">Prism-gebaarprofielen</string>
+    <string name="prism_gesture_everyday">Dagelijks</string>
+    <string name="prism_gesture_power">Power</string>
+    <string name="prism_gesture_minimal">Minimaal</string>
+    <string name="prism_gesture_icon_hint">Tip: houd een app ingedrukt, kies Aanpassen en stel voor dat icoon aparte veegacties in.</string>
     <string name="home_screen_lock">Startscherm vergrendelen</string>
     <string name="home_screen_unlock">Startscherm ontgrendelen</string>
     <string name="home_screen_locked">Startscherm is vergrendeld</string>
@@ -611,7 +616,8 @@
     <string name="color_light">Licht</string>
     <string name="color_dark">Donker</string>
     <string name="force_rounded_widgets">Afgeronde hoeken</string>
-    <string name="allow_widget_overlap">Overlapping toestaan</string>
+    <string name="allow_widget_overlap">Widgetstapels en overlap</string>
+    <string name="prism_widget_stacks_description">Plaats even grote widgets op dezelfde vakken en veeg daarna met twee vingers omhoog of omlaag om door de stapel te bladeren.</string>
     <string name="force_widget_resize_label">Widget-grootte afdwingen</string>
     <string name="force_widget_resize_description">Aanpassen van de grootte toestaan van widgets die beperkt zijn tot een specifieke grootte</string>
     <string name="widget_unlimited_size_label">Beperkingen van grootte verwijderen</string>
