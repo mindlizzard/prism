@@ -150,6 +150,7 @@ import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import static app.lawnchair.util.LawnchairUtilsKt.toBitmap;
 import app.lawnchair.LawnchairApp;
 import app.lawnchair.LawnchairAppKt;
+import app.lawnchair.LawnchairLauncher;
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.smartspace.DoubleShadowTextView;
@@ -157,6 +158,7 @@ import app.lawnchair.smartspace.SmartspaceAppWidgetProvider;
 import app.lawnchair.smartspace.model.LawnchairSmartspace;
 import app.lawnchair.smartspace.model.SmartspaceMode;
 import app.lawnchair.theme.drawable.DrawableTokens;
+import app.lawnchair.ui.popup.LawnchairShortcut;
 import app.lawnchair.util.LawnchairUtilsKt;
 
 /**
@@ -4017,6 +4019,21 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
         return absoluteDelta
                 > deviceProfile.getDeviceProperties().getAvailableWidthPx() * SIGNIFICANT_MOVE_SCREEN_WIDTH_PERCENTAGE;
+    }
+
+    @Override
+    public View.OnLongClickListener getWorkspaceChildOnLongClickListener() {
+        View.OnLongClickListener defaultListener =
+                WorkspaceLayoutManager.super.getWorkspaceChildOnLongClickListener();
+        return view -> {
+            if (view instanceof FolderIcon folderIcon
+                    && mLauncher instanceof LawnchairLauncher lawnchairLauncher
+                    && LawnchairShortcut.showWorkspaceFolderPopup(
+                            lawnchairLauncher, folderIcon)) {
+                return true;
+            }
+            return defaultListener.onLongClick(view);
+        };
     }
 
     @Override

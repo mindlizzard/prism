@@ -92,6 +92,7 @@ class LawnchairShortcut {
             ) != null
         }
 
+        @JvmStatic
         fun showWorkspaceFolderPopup(
             launcher: LawnchairLauncher,
             folderIcon: FolderIcon,
