@@ -38,8 +38,8 @@ import app.lawnchair.icons.CustomAdaptiveIconDrawable
 import app.lawnchair.icons.shape.IconShape
 import app.lawnchair.icons.shape.IconShapeManager
 import app.lawnchair.predictions.PredictionMode
-import app.lawnchair.prism.PrismBrand
 import app.lawnchair.preferences.PreferenceManager as LawnchairPreferenceManager
+import app.lawnchair.prism.PrismBrand
 import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.search.algorithms.LawnchairSearchAlgorithm
 import app.lawnchair.search.algorithms.engine.provider.web.WebSearchProvider
@@ -302,7 +302,6 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = 1.18f,
         onSet = { reloadHelper.reloadGrid() },
     )
-
 
     val showNotificationCount = preference(
         key = booleanPreferencesKey(name = "show_notification_count"),
