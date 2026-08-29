@@ -16,7 +16,6 @@
 
 package app.lawnchair.ui.preferences.destinations
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -245,17 +244,15 @@ private fun PrismThemeProfilePreference(
             ListPreferenceEntry(
                 value = profile,
                 label = {
-                    Text(
-                        when (profile) {
-                            PrismBrand.ThemeProfile.SYSTEM -> "System"
-                            PrismBrand.ThemeProfile.WALLPAPER -> "Wallpaper"
-                            PrismBrand.ThemeProfile.VIBRANT -> "Vibrant"
-                            PrismBrand.ThemeProfile.PASTEL -> "Pastel"
-                            PrismBrand.ThemeProfile.AMOLED -> "AMOLED"
-                            PrismBrand.ThemeProfile.GLASS -> "Glass"
-                            PrismBrand.ThemeProfile.CUSTOM -> "Custom"
-                        },
-                    )
+                    when (profile) {
+                        PrismBrand.ThemeProfile.SYSTEM -> "System"
+                        PrismBrand.ThemeProfile.WALLPAPER -> "Wallpaper"
+                        PrismBrand.ThemeProfile.VIBRANT -> "Vibrant"
+                        PrismBrand.ThemeProfile.PASTEL -> "Pastel"
+                        PrismBrand.ThemeProfile.AMOLED -> "AMOLED"
+                        PrismBrand.ThemeProfile.GLASS -> "Glass"
+                        PrismBrand.ThemeProfile.CUSTOM -> "Custom"
+                    }
                 },
             )
         }
