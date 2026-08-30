@@ -68,6 +68,7 @@ class PreferenceManager @Inject constructor(
 
     val iconPackPackage = StringPref("pref_iconPackPackage", "", reloadIcons)
     val themedIconPackPackage = StringPref("pref_themedIconPackPackage", "", reloadIcons)
+    val prismFallbackIconPackPackage = StringPref("pref_prismFallbackIconPackPackage", "", reloadIcons)
     val prismForgeEnabled = BoolPref("pref_prismForgeEnabled", true, reloadIcons)
     val prismForgeStyle = StringPref("pref_prismForgeStyle", "auto", reloadIcons)
     val allowRotation = BoolPref("pref_allowRotation", false)

@@ -124,6 +124,7 @@ fun IconPackPreferences(
     val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(context)
 
     val iconPackAdapter = prefs.iconPackPackage.getAdapter()
+    val fallbackIconPackAdapter = prefs.prismFallbackIconPackPackage.getAdapter()
     val themedIconPackAdapter = prefs.themedIconPackPackage.getAdapter()
     val themedIconsAdapter = prefs.themedIcons.getAdapter()
     val drawerThemedIconsAdapter = prefs.drawerThemedIcons.getAdapter()
@@ -161,6 +162,7 @@ fun IconPackPreferences(
                         )
                         key(
                             iconPackAdapter.state.value,
+                            fallbackIconPackAdapter.state.value,
                             themedIconPackAdapter.state.value,
                             themedIconsAdapter.state.value,
                             tintIconpack.state.value,
@@ -223,9 +225,30 @@ fun IconPackPreferences(
                             IconPackGrid(
                                 adapter = iconPackAdapter,
                                 false,
+                                onPackSelected = { packageName ->
+                                    iconPackAdapter.onChange(packageName)
+                                    if (
+                                        packageName.isEmpty() ||
+                                        fallbackIconPackAdapter.state.value == packageName
+                                    ) {
+                                        fallbackIconPackAdapter.onChange("")
+                                    }
+                                },
                             )
+                            val hasIconPack = iconPackAdapter.state.value.isNotEmpty()
+                            ExpandAndShrink(visible = hasIconPack) {
+                                PreferenceGroup(
+                                    heading = stringResource(id = R.string.prism_icon_mixer_title),
+                                    description = stringResource(id = R.string.prism_icon_mixer_description),
+                                ) {
+                                    IconPackGrid(
+                                        adapter = fallbackIconPackAdapter,
+                                        isThemedIconPack = false,
+                                        excludedPackage = iconPackAdapter.state.value,
+                                    )
+                                }
+                            }
                             PreferenceGroup {
-                                val hasIconPack = iconPackAdapter.state.value.isNotEmpty()
                                 SwitchPreference(
                                     label = stringResource(id = R.string.prism_forge_title),
                                     description = stringResource(
@@ -322,6 +345,8 @@ fun IconPackGrid(
     adapter: PreferenceAdapter<String>,
     isThemedIconPack: Boolean,
     modifier: Modifier = Modifier,
+    excludedPackage: String? = null,
+    onPackSelected: ((String) -> Unit)? = null,
 ) {
     val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(LocalContext.current)
     val preferenceInteractor = LocalPreferenceInteractor.current
@@ -332,7 +357,10 @@ fun IconPackGrid(
     val lazyListState = rememberLazyListState()
     val padding = 12.dp
 
-    val iconPacksLocal = iconPacks
+    val availablePacks = if (isThemedIconPack) themedIconPacks else iconPacks
+    val iconPacksLocal = availablePacks.filter {
+        it.packageName.isEmpty() || it.packageName != excludedPackage
+    }
 
     val selectedPack = adapter.state.value
     LaunchedEffect(selectedPack) {
@@ -364,7 +392,7 @@ fun IconPackGrid(
                         modifier = Modifier.width(iconPackItemWidth.dp),
                     ) {
                         mMSDLPlayerWrapper.playToken(MSDLToken.TAP_HIGH_EMPHASIS)
-                        adapter.onChange(item.packageName)
+                        onPackSelected?.invoke(item.packageName) ?: adapter.onChange(item.packageName)
                     }
                 }
             }

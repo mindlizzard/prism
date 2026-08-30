@@ -72,18 +72,24 @@ fun GeneralPreferences(modifier: Modifier = Modifier) {
     val currentIconPackName = iconPacks
         .find { it.packageName == preferenceManager().iconPackPackage.get() }
         ?.name
+    val fallbackIconPackName = iconPacks
+        .find { it.packageName == preferenceManager().prismFallbackIconPackPackage.get() }
+        ?.name
+    val mixedIconPackName = listOfNotNull(currentIconPackName, fallbackIconPackName)
+        .joinToString(separator = " + ")
+        .ifEmpty { null }
     val themedIconsEnabled = ThemedIconsState.getForSettings(
         themedIcons = themedIconsAdapter.state.value,
         drawerThemedIcons = drawerThemedIconsAdapter.state.value,
     ) != ThemedIconsState.Off
-    val iconStyleSubtitle = if (currentIconPackName != null && themedIconsEnabled) {
+    val iconStyleSubtitle = if (mixedIconPackName != null && themedIconsEnabled) {
         stringResource(
             id = R.string.x_and_y,
-            currentIconPackName,
+            mixedIconPackName,
             stringResource(id = R.string.themed_icon_title),
         )
     } else {
-        currentIconPackName
+        mixedIconPackName
     }
     val iconShapeSubtitle = iconShapeEntries(context)
         .firstOrNull { it.value == iconShapeAdapter.state.value }

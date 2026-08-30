@@ -877,4 +877,6 @@
     <string name="prism_forge_style_material">Material You</string>
     <string name="prism_forge_style_monochrome">Monochroom</string>
     <string name="prism_forge_style_glass">Glas</string>
+    <string name="prism_icon_mixer_title">Prism Icon Mixer</string>
+    <string name="prism_icon_mixer_description">Kies een tweede icoonpakket. Als het eerste pakket geen icoon voor een app heeft, probeert Prism dit pakket voordat Forge er één maakt. Kies Systeemiconen om mixen uit te schakelen.</string>
 </resources>

@@ -62,6 +62,7 @@ class LawnchairIconProvider @Inject constructor(
     private val themedIconsEnabled get() = prefs.themedIcons.get()
 
     private val iconPackPref = prefs.iconPackPackage
+    private val fallbackIconPackPref = prefs.prismFallbackIconPackPackage
     private val themedIconSourcePref = prefs.themedIconPackPackage
 
     private val iconPackProvider = IconPackProvider.INSTANCE.get(context)
@@ -70,6 +71,8 @@ class LawnchairIconProvider @Inject constructor(
 
     private val iconPack
         get() = iconPackProvider.getIconPack(iconPackPref.get())?.apply { loadBlocking() }
+    private val fallbackIconPack
+        get() = iconPackProvider.getIconPack(fallbackIconPackPref.get())?.apply { loadBlocking() }
     private val themedIconSource
         get() = iconPackProvider.getIconPack(themedIconSourcePref.get())?.apply { loadBlocking() }
 
@@ -104,14 +107,17 @@ class LawnchairIconProvider @Inject constructor(
             return overrideItem.toIconEntry()
         }
 
-        val iconPack = iconPack ?: return null
-        // then look for dynamic calendar
-        val calendarEntry = iconPack.getCalendar(componentName)
-        if (calendarEntry != null) {
-            return calendarEntry
+        val primaryPack = iconPack ?: return null
+        // then look for a dynamic calendar or normal icon in the primary pack
+        primaryPack.getCalendar(componentName)?.let { return it }
+        primaryPack.getIcon(componentName)?.let { return it }
+
+        val fallbackPack = fallbackIconPack
+        if (fallbackPack == null || fallbackPack.packPackageName == primaryPack.packPackageName) {
+            return null
         }
-        // finally, look for normal icon
-        return iconPack.getIcon(componentName)
+        // Prism Icon Mixer tries the secondary pack before Forge creates a fallback.
+        return fallbackPack.getCalendar(componentName) ?: fallbackPack.getIcon(componentName)
     }
 
     /**
@@ -252,6 +258,7 @@ class LawnchairIconProvider @Inject constructor(
         }
         return "$base|lc:" +
             "ip=${iconPackPref.get()}," +
+            "fip=${fallbackIconPackPref.get()}," +
             "tip=${themedIconSourcePref.get()}," +
             "ti=${prefs.themedIcons.get()}," +
             "dti=${prefs.drawerThemedIcons.get()}," +
@@ -342,8 +349,14 @@ class LawnchairIconProvider @Inject constructor(
                 field?.close()
                 field = value
             }
+        private var fallbackCalendarAndClockChangeReceiver: CalendarAndClockChangeReceiver? = null
+            set(value) {
+                field?.close()
+                field = value
+            }
         private var iconState = themeManager.iconState
         private val iconPackPref = PreferenceManager.getInstance(context).iconPackPackage
+        private val fallbackIconPackPref = PreferenceManager.getInstance(context).prismFallbackIconPackPackage
         private val themedIconPackPref = PreferenceManager.getInstance(context).themedIconPackPackage
 
         private val subscription = iconPackPref.subscribeChanges {
@@ -362,15 +375,34 @@ class LawnchairIconProvider @Inject constructor(
                 recreateCalendarAndClockChangeReceiver()
             }
         }
+        private val fallbackIconSubscription = fallbackIconPackPref.subscribeChanges {
+            val newState = themeManager.iconState
+            if (iconState != newState) {
+                iconState = newState
+                updateSystemState()
+                recreateCalendarAndClockChangeReceiver()
+            }
+        }
 
         init {
             recreateCalendarAndClockChangeReceiver()
         }
 
         private fun recreateCalendarAndClockChangeReceiver() {
-            val iconPack = IconPackProvider.INSTANCE.get(context).getIconPack(iconPackPref.get())
-            calendarAndClockChangeReceiver = if (iconPack != null) {
-                CalendarAndClockChangeReceiver(context, handler, iconPack, callback)
+            val provider = IconPackProvider.INSTANCE.get(context)
+            val primaryPack = provider.getIconPack(iconPackPref.get())
+            val fallbackPack = provider.getIconPack(fallbackIconPackPref.get())
+            calendarAndClockChangeReceiver = if (primaryPack != null) {
+                CalendarAndClockChangeReceiver(context, handler, primaryPack, callback)
+            } else {
+                null
+            }
+            fallbackCalendarAndClockChangeReceiver = if (
+                primaryPack != null &&
+                fallbackPack != null &&
+                fallbackPack.packPackageName != primaryPack.packPackageName
+            ) {
+                CalendarAndClockChangeReceiver(context, handler, fallbackPack, callback)
             } else {
                 null
             }
@@ -378,7 +410,9 @@ class LawnchairIconProvider @Inject constructor(
 
         override fun close() {
             calendarAndClockChangeReceiver = null
+            fallbackCalendarAndClockChangeReceiver = null
             subscription.close()
+            fallbackIconSubscription.close()
             themedIconSubscription.close()
         }
     }

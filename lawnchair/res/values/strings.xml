@@ -1126,4 +1126,6 @@
     <string name="prism_forge_style_material">Material You</string>
     <string name="prism_forge_style_monochrome">Monochrome</string>
     <string name="prism_forge_style_glass">Glass</string>
+    <string name="prism_icon_mixer_title">Prism Icon Mixer</string>
+    <string name="prism_icon_mixer_description">Choose a second icon pack. When the primary pack has no icon for an app, Prism tries this pack before Forge creates one. Choose System icons to disable mixing.</string>
 </resources>
