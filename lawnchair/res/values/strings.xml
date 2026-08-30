@@ -742,6 +742,12 @@
     <string name="prism_profile_balanced">Balanced</string>
     <string name="prism_profile_power">Power</string>
     <string name="prism_profile_applied">%1$s profile applied</string>
+    <string name="prism_drawer_profiles_title">Prism drawer profiles</string>
+    <string name="prism_drawer_profiles_description">Give the app drawer, search bar, icons and spacing a matching look in one tap.</string>
+    <string name="prism_drawer_profile_glass">Glass</string>
+    <string name="prism_drawer_profile_clean">Clean</string>
+    <string name="prism_drawer_profile_compact">Compact</string>
+    <string name="prism_drawer_profile_applied">%1$s drawer profile applied</string>
     <string name="home_screen_lock">Lock home screen</string>
     <string name="home_screen_unlock">Unlock home screen</string>
     <string name="home_screen_locked">Home screen is locked</string>

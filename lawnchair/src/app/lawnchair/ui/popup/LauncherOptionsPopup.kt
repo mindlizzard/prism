@@ -7,7 +7,9 @@ import androidx.annotation.StringRes
 import app.lawnchair.preferences2.PreferenceManager2.Companion.getInstance
 import app.lawnchair.preferences2.firstCached
 import app.lawnchair.ui.preferences.PreferenceActivity
+import app.lawnchair.ui.preferences.navigation.AppDrawer
 import app.lawnchair.ui.preferences.navigation.BackupAndRestore
+import app.lawnchair.ui.preferences.navigation.General
 import app.lawnchair.ui.preferences.navigation.GeneralIconPack
 import app.lawnchair.ui.preferences.navigation.Gestures
 import app.lawnchair.ui.preferences.navigation.HomeScreenGrid
@@ -25,9 +27,11 @@ object LauncherOptionsPopup {
         LauncherOptionPopupItem("lock", false),
         LauncherOptionPopupItem("edit_mode", false),
         LauncherOptionPopupItem("wallpaper", true),
+        LauncherOptionPopupItem("prism_theme", true),
         LauncherOptionPopupItem("widgets", true),
         LauncherOptionPopupItem("layout_lab", true),
         LauncherOptionPopupItem("all_apps", true),
+        LauncherOptionPopupItem("drawer_style", false),
         LauncherOptionPopupItem("icon_style", false),
         LauncherOptionPopupItem("gestures", false),
         LauncherOptionPopupItem("backup_restore", false),
@@ -131,6 +135,15 @@ object LauncherOptionsPopup {
                 launcher.startActivity(PreferenceActivity.createIntent(launcher, HomeScreenGrid))
                 true
             },
+            "prism_theme" to OptionItem(
+                launcher,
+                R.string.prism_theme_label,
+                R.drawable.ic_palette,
+                LauncherEvent.IGNORE,
+            ) {
+                launcher.startActivity(PreferenceActivity.createIntent(launcher, General))
+                true
+            },
             "enterAllApps" to OptionItem(
                 launcher,
                 R.string.all_apps_button_label,
@@ -138,6 +151,15 @@ object LauncherOptionsPopup {
                 LauncherEvent.LAUNCHER_ALL_APPS_TAP_OR_LONGPRESS,
                 onStartAllApps,
             ),
+            "drawer_style" to OptionItem(
+                launcher,
+                R.string.prism_drawer_profiles_title,
+                R.drawable.ic_apps,
+                LauncherEvent.IGNORE,
+            ) {
+                launcher.startActivity(PreferenceActivity.createIntent(launcher, AppDrawer))
+                true
+            },
             "home_settings" to OptionItem(
                 launcher,
                 R.string.settings_button_text,
@@ -246,8 +268,18 @@ object LauncherOptionsPopup {
                 icon = R.drawable.ic_home_screen,
             )
 
+            "prism_theme" -> LauncherOptionMetadata(
+                label = R.string.prism_theme_label,
+                icon = R.drawable.ic_palette,
+            )
+
             "all_apps" -> LauncherOptionMetadata(
                 label = R.string.all_apps_button_label,
+                icon = R.drawable.ic_apps,
+            )
+
+            "drawer_style" -> LauncherOptionMetadata(
+                label = R.string.prism_drawer_profiles_title,
                 icon = R.drawable.ic_apps,
             )
 

@@ -20,8 +20,7 @@ enum class PrismFolderVisualStyle(
     fun applyTo(options: Int): Int = (options and STYLE_MASK.inv()) or optionBits
 
     companion object {
-        fun fromOptions(options: Int): PrismFolderVisualStyle =
-            entries.firstOrNull { it.optionBits == (options and STYLE_MASK) } ?: CLASSIC
+        fun fromOptions(options: Int): PrismFolderVisualStyle = entries.firstOrNull { it.optionBits == (options and STYLE_MASK) } ?: CLASSIC
     }
 }
 
@@ -39,16 +38,14 @@ enum class PrismFolderIconSize(
     fun applyTo(options: Int): Int = (options and ICON_SIZE_MASK.inv()) or optionBits
 
     companion object {
-        fun fromOptions(options: Int): PrismFolderIconSize =
-            entries.firstOrNull { it.optionBits == (options and ICON_SIZE_MASK) } ?: BALANCED
+        fun fromOptions(options: Int): PrismFolderIconSize = entries.firstOrNull { it.optionBits == (options and ICON_SIZE_MASK) } ?: BALANCED
     }
 }
 
 object PrismFolderAppearance {
 
     @JvmStatic
-    fun usesRoundedShape(options: Int): Boolean =
-        PrismFolderVisualStyle.fromOptions(options) != PrismFolderVisualStyle.CLASSIC
+    fun usesRoundedShape(options: Int): Boolean = PrismFolderVisualStyle.fromOptions(options) != PrismFolderVisualStyle.CLASSIC
 
     @JvmStatic
     fun iconScale(options: Int): Float = PrismFolderIconSize.fromOptions(options).scale
@@ -70,21 +67,19 @@ object PrismFolderAppearance {
     }
 
     @JvmStatic
-    fun cornerRadiusFactor(options: Int): Float =
-        when (PrismFolderVisualStyle.fromOptions(options)) {
-            PrismFolderVisualStyle.CLASSIC -> 0.22f
-            PrismFolderVisualStyle.SOFT -> 0.32f
-            PrismFolderVisualStyle.GLASS -> 0.28f
-            PrismFolderVisualStyle.OUTLINE -> 0.30f
-        }
+    fun cornerRadiusFactor(options: Int): Float = when (PrismFolderVisualStyle.fromOptions(options)) {
+        PrismFolderVisualStyle.CLASSIC -> 0.22f
+        PrismFolderVisualStyle.SOFT -> 0.32f
+        PrismFolderVisualStyle.GLASS -> 0.28f
+        PrismFolderVisualStyle.OUTLINE -> 0.30f
+    }
 
     @JvmStatic
-    fun strokeAlpha(options: Int): Int =
-        when (PrismFolderVisualStyle.fromOptions(options)) {
-            PrismFolderVisualStyle.CLASSIC,
-            PrismFolderVisualStyle.SOFT,
-            -> 0
-            PrismFolderVisualStyle.GLASS -> 88
-            PrismFolderVisualStyle.OUTLINE -> 184
-        }
+    fun strokeAlpha(options: Int): Int = when (PrismFolderVisualStyle.fromOptions(options)) {
+        PrismFolderVisualStyle.CLASSIC,
+        PrismFolderVisualStyle.SOFT,
+        -> 0
+        PrismFolderVisualStyle.GLASS -> 88
+        PrismFolderVisualStyle.OUTLINE -> 184
+    }
 }

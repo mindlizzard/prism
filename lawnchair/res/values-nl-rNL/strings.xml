@@ -591,6 +591,12 @@
     <string name="prism_profile_balanced">Gebalanceerd</string>
     <string name="prism_profile_power">Power</string>
     <string name="prism_profile_applied">Profiel %1$s toegepast</string>
+    <string name="prism_drawer_profiles_title">Prism-app-ladeprofielen</string>
+    <string name="prism_drawer_profiles_description">Geef de app-lade, zoekbalk, iconen en tussenruimte met één tik een bijpassend uiterlijk.</string>
+    <string name="prism_drawer_profile_glass">Glas</string>
+    <string name="prism_drawer_profile_clean">Strak</string>
+    <string name="prism_drawer_profile_compact">Compact</string>
+    <string name="prism_drawer_profile_applied">App-ladeprofiel %1$s toegepast</string>
     <string name="home_screen_lock">Startscherm vergrendelen</string>
     <string name="home_screen_unlock">Startscherm ontgrendelen</string>
     <string name="home_screen_locked">Startscherm is vergrendeld</string>

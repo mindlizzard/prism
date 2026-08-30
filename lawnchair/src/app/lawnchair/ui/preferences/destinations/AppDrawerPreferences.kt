@@ -74,6 +74,7 @@ fun AppDrawerPreferences(
         backArrowVisible = !LocalIsExpandedScreen.current,
         modifier = modifier,
     ) {
+        PrismDrawerProfiles()
         val drawerListAdapter = prefs.drawerList.getAdapter()
         Column {
             DrawerLayoutPreference(drawerListAdapter)

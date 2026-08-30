@@ -5,7 +5,7 @@
 Prism Launcher is an Android launcher focused on deep theming,
 flexible folders, icon customization and Material You.
 
-## Planned features
+## Included features
 
 - Dynamic Material You / wallpaper theming
 - Glass, blur, AMOLED, vibrant and pastel themes
@@ -21,6 +21,8 @@ flexible folders, icon customization and Material You.
 - Widget stacks
 - Backup and restore
 - Adaptive launcher profiles
+- Prism app-drawer profiles
+- Customizable Prism quick menu
 
 ## Development
 

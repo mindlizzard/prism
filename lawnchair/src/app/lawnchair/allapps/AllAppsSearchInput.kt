@@ -161,6 +161,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
                 }
                 val themedQsb by prefs2.themedHotseatQsb.asState()
                 val shouldShowIcons by prefs2.matchHotseatQsbStyle.asState()
+                val showSearchBackground by prefs2.appDrawerSearchBarBackground.asState()
 
                 val supportsLens = searchProvider == Google || searchProvider == PixelSearch
                 val voiceIntent = remember(searchProvider, context) {
@@ -186,7 +187,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
                 }
 
                 val backgroundAlpha by animateIntAsState(
-                    if (isFocused || !queryEmpty) 0 else 100,
+                    if (showSearchBackground && !isFocused && queryEmpty) 100 else 0,
                 )
 
                 // Ignore other theme attributes to preserve existing behavior
