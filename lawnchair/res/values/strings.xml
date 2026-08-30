@@ -196,7 +196,7 @@
     <string name="quickstep_description">Clear all button, corner radius</string>
 
     <string name="backup_and_restore_label">Backup and restore</string>
-    <string name="backup_and_restore_description">Save current setup, restore backups</string>
+    <string name="backup_and_restore_description">Protect Prism profiles, layout, gestures and wallpaper</string>
 
     <string name="about_label">About</string>
 
@@ -736,6 +736,12 @@
     <string name="prism_gesture_power">Power</string>
     <string name="prism_gesture_minimal">Minimal</string>
     <string name="prism_gesture_icon_hint">Tip: long-press an app, choose Customize, and assign separate swipe actions to that icon.</string>
+    <string name="prism_profiles_title">Prism profiles</string>
+    <string name="prism_profiles_description">Apply a matching theme, grid, dock, icon size and spacing in one tap. You can fine-tune everything afterwards.</string>
+    <string name="prism_profile_calm">Calm</string>
+    <string name="prism_profile_balanced">Balanced</string>
+    <string name="prism_profile_power">Power</string>
+    <string name="prism_profile_applied">%1$s profile applied</string>
     <string name="home_screen_lock">Lock home screen</string>
     <string name="home_screen_unlock">Unlock home screen</string>
     <string name="home_screen_locked">Home screen is locked</string>
@@ -776,6 +782,14 @@
     <string name="force_rounded_widgets">Rounded corners</string>
     <string name="allow_widget_overlap">Widget stacks and overlap</string>
     <string name="prism_widget_stacks_description">Place equal-sized widgets on the same cells, then swipe with two fingers up or down to cycle through the stack.</string>
+    <string name="prism_backup_title">Your Prism, safely saved</string>
+    <string name="prism_backup_summary">Keep your layout, folders, widgets, gestures, launcher settings and wallpaper together in one portable file.</string>
+    <string name="prism_backup_save_section">Save your setup</string>
+    <string name="prism_backup_restore_section">Restore Prism</string>
+    <string name="prism_backup_import_section">Import from another launcher</string>
+    <string name="prism_backup_restore_warning">Restoring replaces the selected parts of your current setup. Make a fresh backup first.</string>
+    <string name="prism_backup_layout_description">Apps, folders, widgets, gestures and all Prism settings</string>
+    <string name="prism_backup_wallpaper_description">A copy of your current static wallpaper</string>
 
     <string name="force_widget_resize_label">Enforce widget resizing</string>
     <string name="force_widget_resize_description">Allow resizing of widgets that are constrained to a specific size</string>

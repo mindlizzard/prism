@@ -185,6 +185,7 @@ fun ColumnScope.RestoreBackupOptions(
             setFlags = viewModel::setBackupContents,
             mask = LawnchairBackup.INCLUDE_LAYOUT_AND_SETTINGS,
             label = stringResource(id = R.string.backup_content_layout_and_settings),
+            description = stringResource(id = R.string.prism_backup_layout_description),
             enabled = backupContents.hasFlag(LawnchairBackup.INCLUDE_LAYOUT_AND_SETTINGS),
         )
         FlagSwitchPreference(
@@ -192,6 +193,7 @@ fun ColumnScope.RestoreBackupOptions(
             setFlags = viewModel::setBackupContents,
             mask = LawnchairBackup.INCLUDE_WALLPAPER,
             label = stringResource(id = R.string.backup_content_wallpaper),
+            description = stringResource(id = R.string.prism_backup_wallpaper_description),
             enabled = backupContents.hasFlag(LawnchairBackup.INCLUDE_WALLPAPER),
         )
     }

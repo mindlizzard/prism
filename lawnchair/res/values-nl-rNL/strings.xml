@@ -153,7 +153,7 @@
     <string name="quickstep_label">Recente apps</string>
     <string name="quickstep_description">Hoekradius alles wissen-knop</string>
     <string name="backup_and_restore_label">Back-up en herstel</string>
-    <string name="backup_and_restore_description">Huidige instellingen opslaan, back-ups herstellen</string>
+    <string name="backup_and_restore_description">Bescherm Prism-profielen, indeling, gebaren en achtergrond</string>
     <string name="about_label">Over</string>
     <string name="app_info_drop_target_label">App-informatie</string>
     <string name="debug_restart_launcher">Prism Launcher opnieuw starten</string>
@@ -585,6 +585,12 @@
     <string name="prism_gesture_power">Power</string>
     <string name="prism_gesture_minimal">Minimaal</string>
     <string name="prism_gesture_icon_hint">Tip: houd een app ingedrukt, kies Aanpassen en stel voor dat icoon aparte veegacties in.</string>
+    <string name="prism_profiles_title">Prism-profielen</string>
+    <string name="prism_profiles_description">Pas met één tik een bijpassend thema, raster, dock, icoongrootte en tussenruimte toe. Je kunt alles daarna nog verfijnen.</string>
+    <string name="prism_profile_calm">Rustig</string>
+    <string name="prism_profile_balanced">Gebalanceerd</string>
+    <string name="prism_profile_power">Power</string>
+    <string name="prism_profile_applied">Profiel %1$s toegepast</string>
     <string name="home_screen_lock">Startscherm vergrendelen</string>
     <string name="home_screen_unlock">Startscherm ontgrendelen</string>
     <string name="home_screen_locked">Startscherm is vergrendeld</string>
@@ -618,6 +624,14 @@
     <string name="force_rounded_widgets">Afgeronde hoeken</string>
     <string name="allow_widget_overlap">Widgetstapels en overlap</string>
     <string name="prism_widget_stacks_description">Plaats even grote widgets op dezelfde vakken en veeg daarna met twee vingers omhoog of omlaag om door de stapel te bladeren.</string>
+    <string name="prism_backup_title">Jouw Prism, veilig bewaard</string>
+    <string name="prism_backup_summary">Bewaar je indeling, mappen, widgets, gebaren, launcherinstellingen en achtergrond samen in één overdraagbaar bestand.</string>
+    <string name="prism_backup_save_section">Je indeling bewaren</string>
+    <string name="prism_backup_restore_section">Prism herstellen</string>
+    <string name="prism_backup_import_section">Uit een andere launcher importeren</string>
+    <string name="prism_backup_restore_warning">Herstellen vervangt de gekozen delen van je huidige indeling. Maak daarom eerst een nieuwe back-up.</string>
+    <string name="prism_backup_layout_description">Apps, mappen, widgets, gebaren en alle Prism-instellingen</string>
+    <string name="prism_backup_wallpaper_description">Een kopie van je huidige statische achtergrond</string>
     <string name="force_widget_resize_label">Widget-grootte afdwingen</string>
     <string name="force_widget_resize_description">Aanpassen van de grootte toestaan van widgets die beperkt zijn tot een specifieke grootte</string>
     <string name="widget_unlimited_size_label">Beperkingen van grootte verwijderen</string>

@@ -95,6 +95,7 @@ fun GeneralPreferences(modifier: Modifier = Modifier) {
         label = stringResource(id = R.string.general_label),
         modifier = modifier,
     ) {
+        PrismLauncherProfiles()
         PreferenceGroup {
             SwitchPreference(
                 adapter = prefs.allowRotation.getAdapter(),

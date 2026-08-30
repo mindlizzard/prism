@@ -159,6 +159,7 @@ fun CreateBackupScreen(
                 setFlags = viewModel::setBackupContents,
                 mask = LawnchairBackup.INCLUDE_LAYOUT_AND_SETTINGS,
                 label = stringResource(id = R.string.backup_content_layout_and_settings),
+                description = stringResource(id = R.string.prism_backup_layout_description),
             )
             FlagSwitchPreference(
                 flags = contents,
@@ -171,6 +172,7 @@ fun CreateBackupScreen(
                 },
                 mask = LawnchairBackup.INCLUDE_WALLPAPER,
                 label = stringResource(id = R.string.backup_content_wallpaper),
+                description = stringResource(id = R.string.prism_backup_wallpaper_description),
                 enabled = !hasLiveWallpaper,
             )
         }
