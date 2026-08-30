@@ -58,6 +58,7 @@ import com.android.launcher3.views.ActivityContext;
 import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 
 import app.lawnchair.preferences2.PreferenceManager2;
+import app.lawnchair.prism.PrismFolderAppearance;
 import app.lawnchair.theme.color.ColorOption;
 import app.lawnchair.theme.color.tokens.ColorTokens;
 import app.lawnchair.util.LawnchairUtilsKt;
@@ -105,6 +106,9 @@ public class PreviewBackground extends DelegatedCellDrawing {
     int basePreviewOffsetX;
     int basePreviewOffsetY;
     private boolean mIsPrismExpanded;
+    private boolean mPrismUsesRoundedShape;
+    private float mPrismCornerRadiusFactor = 0.22f;
+    private int mPrismStrokeAlpha;
 
     private CellLayout mDrawingDelegate;
 
@@ -200,6 +204,15 @@ public class PreviewBackground extends DelegatedCellDrawing {
         mBgColor = LawnchairUtilsKt.resolveFolderPreviewColor(context);
         ta.recycle();
 
+        FolderIcon prismFolderIcon = invalidateDelegate instanceof FolderIcon
+                ? (FolderIcon) invalidateDelegate : null;
+        int prismOptions = prismFolderIcon != null && prismFolderIcon.mInfo != null
+                ? prismFolderIcon.mInfo.options : 0;
+        mBgColor = PrismFolderAppearance.backgroundColor(mBgColor, prismOptions);
+        mPrismUsesRoundedShape = PrismFolderAppearance.usesRoundedShape(prismOptions);
+        mPrismCornerRadiusFactor = PrismFolderAppearance.cornerRadiusFactor(prismOptions);
+        mPrismStrokeAlpha = PrismFolderAppearance.strokeAlpha(prismOptions);
+
         DeviceProfile grid = activity.getDeviceProfile();
         mIsPrismExpanded = false;
         // Lawnchair: Find the correct icon size depending on which parent owned them
@@ -211,8 +224,7 @@ public class PreviewBackground extends DelegatedCellDrawing {
             basePreviewOffsetX = (availableSpaceX - previewSize) / 2;
             basePreviewOffsetY = topPadding + (allAppsIconSize - previewSize) / 2;
         } else {
-            FolderIcon folderIcon = invalidateDelegate instanceof FolderIcon
-                    ? (FolderIcon) invalidateDelegate : null;
+            FolderIcon folderIcon = prismFolderIcon;
             mIsPrismExpanded = folderIcon != null && folderIcon.isPrismExpanded();
             if (mIsPrismExpanded) {
                 int margin = Math.round(8 * context.getResources().getDisplayMetrics().density);
@@ -326,12 +338,13 @@ public class PreviewBackground extends DelegatedCellDrawing {
     }
 
     private void drawPreviewShape(Canvas canvas, float inset, Paint paint) {
-        if (mIsPrismExpanded) {
+        if (mIsPrismExpanded || mPrismUsesRoundedShape) {
             float left = getOffsetX() + inset;
             float top = getOffsetY() + inset;
             float right = getOffsetX() + getScaledWidth() - inset;
             float bottom = getOffsetY() + getScaledHeight() - inset;
-            float cornerRadius = Math.min(right - left, bottom - top) * 0.22f;
+            float cornerRadius = Math.min(right - left, bottom - top)
+                    * mPrismCornerRadiusFactor;
             canvas.drawRoundRect(left, top, right, bottom, cornerRadius, cornerRadius, paint);
         } else {
             getShape().drawShape(
@@ -425,10 +438,12 @@ public class PreviewBackground extends DelegatedCellDrawing {
     }
 
     public void drawBackgroundStroke(Canvas canvas) {
-        if (!DRAW_STROKE) {
+        if (!DRAW_STROKE && mPrismStrokeAlpha == 0) {
             return;
         }
-        mPaint.setColor(setColorAlphaBound(mStrokeColor, mStrokeAlpha));
+        int strokeAlpha = mPrismStrokeAlpha == 0
+                ? mStrokeAlpha : Math.min(mStrokeAlpha, mPrismStrokeAlpha);
+        mPaint.setColor(setColorAlphaBound(mStrokeColor, strokeAlpha));
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeWidth(mStrokeWidth);
 
@@ -451,12 +466,13 @@ public class PreviewBackground extends DelegatedCellDrawing {
 
     public Path getClipPath() {
         mPath.reset();
-        if (mIsPrismExpanded) {
+        if (mIsPrismExpanded || mPrismUsesRoundedShape) {
             float left = getOffsetX();
             float top = getOffsetY();
             float right = left + getScaledWidth();
             float bottom = top + getScaledHeight();
-            float cornerRadius = Math.min(right - left, bottom - top) * 0.22f;
+            float cornerRadius = Math.min(right - left, bottom - top)
+                    * mPrismCornerRadiusFactor;
             mPath.addRoundRect(
                     new RectF(left, top, right, bottom),
                     cornerRadius,

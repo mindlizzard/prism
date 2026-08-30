@@ -728,6 +728,11 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
         requestLayout();
     }
 
+    public void refreshPrismAppearance() {
+        mPreviewItemManager.invalidatePreviewDrawingParams();
+        onItemsChanged(false);
+    }
+
     public void onTitleChanged(CharSequence title) {
         mFolderName.setText(title);
         setContentDescription(getAccessiblityTitle(title));

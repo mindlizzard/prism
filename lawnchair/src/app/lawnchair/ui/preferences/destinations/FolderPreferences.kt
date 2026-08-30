@@ -67,15 +67,15 @@ fun FolderPreferences(
 
             SwitchPreference(
                 adapter = prismLargeFolderAdapter,
-                label = "Grote Prism-folder (beta)",
-                description = "Vergroot de folder en de iconen op het startscherm.",
+                label = stringResource(id = R.string.prism_large_folder_preview),
+                description = stringResource(id = R.string.prism_large_folder_preview_description),
             )
 
             ExpandAndShrink(
                 visible = prismLargeFolderAdapter.state.value,
             ) {
                 SliderPreference(
-                    label = "Foldergrootte",
+                    label = stringResource(id = R.string.prism_folder_scale),
                     adapter = prefs2.prismFolderScale.getAdapter(),
                     step = 0.05f,
                     valueRange = 1f..1.35f,

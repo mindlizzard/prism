@@ -225,7 +225,7 @@ fun IconPackPreferences(
                             IconPackGrid(
                                 adapter = iconPackAdapter,
                                 false,
-                                onPackSelected = { packageName ->
+                                onPackSelect = { packageName ->
                                     iconPackAdapter.onChange(packageName)
                                     if (
                                         packageName.isEmpty() ||
@@ -346,7 +346,7 @@ fun IconPackGrid(
     isThemedIconPack: Boolean,
     modifier: Modifier = Modifier,
     excludedPackage: String? = null,
-    onPackSelected: ((String) -> Unit)? = null,
+    onPackSelect: ((String) -> Unit)? = null,
 ) {
     val mMSDLPlayerWrapper = MSDLPlayerWrapper.INSTANCE.get(LocalContext.current)
     val preferenceInteractor = LocalPreferenceInteractor.current
@@ -392,7 +392,7 @@ fun IconPackGrid(
                         modifier = Modifier.width(iconPackItemWidth.dp),
                     ) {
                         mMSDLPlayerWrapper.playToken(MSDLToken.TAP_HIGH_EMPHASIS)
-                        onPackSelected?.invoke(item.packageName) ?: adapter.onChange(item.packageName)
+                        onPackSelect?.invoke(item.packageName) ?: adapter.onChange(item.packageName)
                     }
                 }
             }

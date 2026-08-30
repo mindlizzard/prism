@@ -860,6 +860,20 @@
     <!-- Prism-mappen -->
     <string name="prism_folder_options">Mapopties</string>
     <string name="prism_folder_size">Mapformaat</string>
+    <string name="prism_folder_style">Mapstijl</string>
+    <string name="prism_folder_style_classic">Klassiek</string>
+    <string name="prism_folder_style_soft">Zacht</string>
+    <string name="prism_folder_style_glass">Glas</string>
+    <string name="prism_folder_style_outline">Contour</string>
+    <string name="prism_folder_icon_size">Iconen in map</string>
+    <string name="prism_folder_icon_size_small">Klein</string>
+    <string name="prism_folder_icon_size_balanced">Gebalanceerd</string>
+    <string name="prism_folder_icon_size_large">Groot</string>
+    <string name="prism_folder_icon_size_extra_large">Extra groot</string>
+    <string name="prism_folder_appearance_updated">Mapuiterlijk aangepast</string>
+    <string name="prism_large_folder_preview">Grotere compacte mappen</string>
+    <string name="prism_large_folder_preview_description">Vergroot 1 × 1-mappen en hun iconen op het startscherm.</string>
+    <string name="prism_folder_scale">Schaal compacte map</string>
     <string name="prism_folder_size_compact">1 × 1 · Compact</string>
     <string name="prism_folder_size_wide">2 × 1 · Breed</string>
     <string name="prism_folder_size_large">2 × 2 · Groot</string>

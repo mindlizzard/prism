@@ -32,6 +32,7 @@ public class ClippedFolderIconLayoutRule {
     private int mNumFolderColumns;
     private boolean mUsePrismGrid;
     private boolean mUseWidePrismGrid;
+    private float mPrismIconScale = 1f;
 
     /**
      * initialize the layout rule
@@ -52,6 +53,10 @@ public class ClippedFolderIconLayoutRule {
         mUsePrismGrid = availableSpaceX != availableSpaceY
                 || Math.max(availableSpaceX, availableSpaceY) > intrinsicIconSize * 1.35f;
         mUseWidePrismGrid = availableSpaceX > availableSpaceY * 1.35f;
+    }
+
+    public void setPrismIconScale(float scale) {
+        mPrismIconScale = Math.max(0.75f, Math.min(scale, 1.35f));
     }
 
     /**
@@ -252,7 +257,7 @@ public class ClippedFolderIconLayoutRule {
             float cellWidth = mAvailableSpaceX / columns;
             float cellHeight = mAvailableSpaceY / rows;
             float targetSize = Math.min(cellWidth, cellHeight) * 0.68f;
-            return Math.min(1.55f, targetSize / mIconSize);
+            return Math.min(2f, targetSize / mIconSize * mPrismIconScale);
         }
         float scale;
         if (page > 0) {
@@ -262,7 +267,7 @@ public class ClippedFolderIconLayoutRule {
         } else {
             scale = MIN_SCALE;
         }
-        return scale * mBaselineIconScale;
+        return scale * mBaselineIconScale * mPrismIconScale;
     }
 
     private float radiusDilationForItems(int numItems) {

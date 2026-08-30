@@ -24,8 +24,10 @@ import app.lawnchair.LawnchairLauncher
 import app.lawnchair.override.CustomizeAppDialog
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
+import app.lawnchair.prism.PrismFolderIconSize
 import app.lawnchair.prism.PrismFolderResizer
 import app.lawnchair.prism.PrismFolderSize
+import app.lawnchair.prism.PrismFolderVisualStyle
 import app.lawnchair.ui.preferences.PreferenceActivity
 import app.lawnchair.ui.preferences.navigation.AppDrawerAppListToFolder
 import app.lawnchair.views.ComposeBottomSheet
@@ -117,6 +119,24 @@ class LawnchairShortcut {
                     },
                     OptionsPopupView.OptionItem(
                         launcher,
+                        R.string.prism_folder_style,
+                        R.drawable.ic_lens,
+                        StatsLogManager.LauncherEvent.IGNORE,
+                    ) {
+                        showFolderStyleDialog(launcher, folderIcon)
+                        true
+                    },
+                    OptionsPopupView.OptionItem(
+                        launcher,
+                        R.string.prism_folder_icon_size,
+                        R.drawable.ic_apps,
+                        StatsLogManager.LauncherEvent.IGNORE,
+                    ) {
+                        showFolderIconSizeDialog(launcher, folderIcon)
+                        true
+                    },
+                    OptionsPopupView.OptionItem(
+                        launcher,
                         R.string.action_move,
                         R.drawable.ic_folder,
                         StatsLogManager.LauncherEvent.IGNORE,
@@ -167,6 +187,71 @@ class LawnchairShortcut {
                 }
                 .setNegativeButton(android.R.string.cancel, null)
                 .show()
+        }
+
+        private fun showFolderStyleDialog(
+            launcher: LawnchairLauncher,
+            folderIcon: FolderIcon,
+        ) {
+            val styles = PrismFolderVisualStyle.entries
+            val labels = styles.map { launcher.getString(it.labelResource) }.toTypedArray()
+            val currentStyle = PrismFolderVisualStyle.fromOptions(folderIcon.mInfo.options)
+
+            AlertDialog.Builder(launcher)
+                .setTitle(R.string.prism_folder_style)
+                .setSingleChoiceItems(labels, styles.indexOf(currentStyle)) { dialog, index ->
+                    updateFolderOptions(
+                        launcher,
+                        folderIcon,
+                        styles[index].applyTo(folderIcon.mInfo.options),
+                    )
+                    Toast.makeText(
+                        launcher,
+                        R.string.prism_folder_appearance_updated,
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                    dialog.dismiss()
+                }
+                .setNegativeButton(android.R.string.cancel, null)
+                .show()
+        }
+
+        private fun showFolderIconSizeDialog(
+            launcher: LawnchairLauncher,
+            folderIcon: FolderIcon,
+        ) {
+            val sizes = PrismFolderIconSize.entries
+            val labels = sizes.map { launcher.getString(it.labelResource) }.toTypedArray()
+            val currentSize = PrismFolderIconSize.fromOptions(folderIcon.mInfo.options)
+
+            AlertDialog.Builder(launcher)
+                .setTitle(R.string.prism_folder_icon_size)
+                .setSingleChoiceItems(labels, sizes.indexOf(currentSize)) { dialog, index ->
+                    updateFolderOptions(
+                        launcher,
+                        folderIcon,
+                        sizes[index].applyTo(folderIcon.mInfo.options),
+                    )
+                    Toast.makeText(
+                        launcher,
+                        R.string.prism_folder_appearance_updated,
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                    dialog.dismiss()
+                }
+                .setNegativeButton(android.R.string.cancel, null)
+                .show()
+        }
+
+        private fun updateFolderOptions(
+            launcher: LawnchairLauncher,
+            folderIcon: FolderIcon,
+            options: Int,
+        ) {
+            if (folderIcon.mInfo.options == options) return
+            folderIcon.mInfo.options = options
+            launcher.modelWriter.updateItemInDatabase(folderIcon.mInfo)
+            folderIcon.refreshPrismAppearance()
         }
 
         val CUSTOMIZE =

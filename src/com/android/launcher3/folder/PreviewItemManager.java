@@ -57,6 +57,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import app.lawnchair.preferences.PreferenceManager;
+import app.lawnchair.prism.PrismFolderAppearance;
 
 /**
  * Manages the drawing and animations of {@link PreviewItemDrawingParams} for a
@@ -141,8 +142,16 @@ public class PreviewItemManager {
                     Utilities.isRtl(mIcon.getResources()),
                     mIcon.mActivity.getDeviceProfile().numFolderColumns
             );
+            mIcon.mPreviewLayoutRule.setPrismIconScale(
+                    PrismFolderAppearance.iconScale(mIcon.mInfo.options));
             updatePreviewItems(false);
         }
+    }
+
+    public void invalidatePreviewDrawingParams() {
+        mTotalWidth = -1;
+        mTotalHeight = -1;
+        recomputePreviewDrawingParams();
     }
 
     PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,

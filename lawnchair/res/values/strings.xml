@@ -1109,6 +1109,20 @@
     <!-- Prism folders -->
     <string name="prism_folder_options">Folder options</string>
     <string name="prism_folder_size">Folder size</string>
+    <string name="prism_folder_style">Folder style</string>
+    <string name="prism_folder_style_classic">Classic</string>
+    <string name="prism_folder_style_soft">Soft</string>
+    <string name="prism_folder_style_glass">Glass</string>
+    <string name="prism_folder_style_outline">Outline</string>
+    <string name="prism_folder_icon_size">Icons in folder</string>
+    <string name="prism_folder_icon_size_small">Small</string>
+    <string name="prism_folder_icon_size_balanced">Balanced</string>
+    <string name="prism_folder_icon_size_large">Large</string>
+    <string name="prism_folder_icon_size_extra_large">Extra large</string>
+    <string name="prism_folder_appearance_updated">Folder appearance updated</string>
+    <string name="prism_large_folder_preview">Larger compact folders</string>
+    <string name="prism_large_folder_preview_description">Enlarge 1 × 1 folders and their icons on the Home screen.</string>
+    <string name="prism_folder_scale">Compact folder scale</string>
     <string name="prism_folder_size_compact">1 × 1 · Compact</string>
     <string name="prism_folder_size_wide">2 × 1 · Wide</string>
     <string name="prism_folder_size_large">2 × 2 · Large</string>
