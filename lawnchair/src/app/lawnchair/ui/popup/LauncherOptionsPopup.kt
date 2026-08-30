@@ -6,6 +6,11 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import app.lawnchair.preferences2.PreferenceManager2.Companion.getInstance
 import app.lawnchair.preferences2.firstCached
+import app.lawnchair.ui.preferences.PreferenceActivity
+import app.lawnchair.ui.preferences.navigation.BackupAndRestore
+import app.lawnchair.ui.preferences.navigation.GeneralIconPack
+import app.lawnchair.ui.preferences.navigation.Gestures
+import app.lawnchair.ui.preferences.navigation.HomeScreenGrid
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -21,7 +26,11 @@ object LauncherOptionsPopup {
         LauncherOptionPopupItem("edit_mode", false),
         LauncherOptionPopupItem("wallpaper", true),
         LauncherOptionPopupItem("widgets", true),
+        LauncherOptionPopupItem("layout_lab", true),
         LauncherOptionPopupItem("all_apps", true),
+        LauncherOptionPopupItem("icon_style", false),
+        LauncherOptionPopupItem("gestures", false),
+        LauncherOptionPopupItem("backup_restore", false),
         LauncherOptionPopupItem("home_settings", true),
         LauncherOptionPopupItem("sys_settings", false),
         LauncherOptionPopupItem("default_page", false),
@@ -113,6 +122,15 @@ object LauncherOptionsPopup {
                 LauncherEvent.LAUNCHER_WIDGETSTRAY_BUTTON_TAP_OR_LONGPRESS,
                 onStartWidgetsMenu,
             ),
+            "layout_lab" to OptionItem(
+                launcher,
+                R.string.prism_layout_lab_title,
+                R.drawable.ic_home_screen,
+                LauncherEvent.IGNORE,
+            ) {
+                launcher.startActivity(PreferenceActivity.createIntent(launcher, HomeScreenGrid))
+                true
+            },
             "enterAllApps" to OptionItem(
                 launcher,
                 R.string.all_apps_button_label,
@@ -127,6 +145,33 @@ object LauncherOptionsPopup {
                 LauncherEvent.LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS,
                 onStartHomeSettings,
             ),
+            "icon_style" to OptionItem(
+                launcher,
+                R.string.icon_style_label,
+                R.drawable.ic_apps,
+                LauncherEvent.IGNORE,
+            ) {
+                launcher.startActivity(PreferenceActivity.createIntent(launcher, GeneralIconPack))
+                true
+            },
+            "gestures" to OptionItem(
+                launcher,
+                R.string.gestures_label,
+                R.drawable.ic_gestures,
+                LauncherEvent.IGNORE,
+            ) {
+                launcher.startActivity(PreferenceActivity.createIntent(launcher, Gestures))
+                true
+            },
+            "backup_restore" to OptionItem(
+                launcher,
+                R.string.backup_and_restore_label,
+                R.drawable.backup_restore,
+                LauncherEvent.IGNORE,
+            ) {
+                launcher.startActivity(PreferenceActivity.createIntent(launcher, BackupAndRestore))
+                true
+            },
             "default_page" to OptionItem(
                 launcher,
                 R.string.set_default_home_page,
@@ -196,6 +241,11 @@ object LauncherOptionsPopup {
                 icon = SystemShortcut.Widgets.getDrawableId(),
             )
 
+            "layout_lab" -> LauncherOptionMetadata(
+                label = R.string.prism_layout_lab_title,
+                icon = R.drawable.ic_home_screen,
+            )
+
             "all_apps" -> LauncherOptionMetadata(
                 label = R.string.all_apps_button_label,
                 icon = R.drawable.ic_apps,
@@ -204,6 +254,21 @@ object LauncherOptionsPopup {
             "home_settings" -> LauncherOptionMetadata(
                 label = R.string.settings_button_text,
                 icon = R.drawable.ic_home_screen,
+            )
+
+            "icon_style" -> LauncherOptionMetadata(
+                label = R.string.icon_style_label,
+                icon = R.drawable.ic_apps,
+            )
+
+            "gestures" -> LauncherOptionMetadata(
+                label = R.string.gestures_label,
+                icon = R.drawable.ic_gestures,
+            )
+
+            "backup_restore" -> LauncherOptionMetadata(
+                label = R.string.backup_and_restore_label,
+                icon = R.drawable.backup_restore,
             )
 
             "default_page" -> LauncherOptionMetadata(

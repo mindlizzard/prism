@@ -28,6 +28,11 @@
 
     <dimen name="lawnchair_dialog_corner_radius">30dp</dimen>
 
+    <!-- Prism home and shortcut pop-ups -->
+    <dimen name="bg_popup_item_width">240dp</dimen>
+    <dimen name="bg_popup_item_height">58dp</dimen>
+    <dimen name="system_shortcut_icon_size">22dp</dimen>
+
     <!-- Edit Mode page strip (bottom of DragLayer) -->
     <dimen name="edit_mode_page_strip_height">88dp</dimen>
     <dimen name="edit_mode_workspace_bottom_gap">8dp</dimen>

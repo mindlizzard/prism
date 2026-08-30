@@ -77,7 +77,7 @@
 
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Preferences</string>
-    <string name="settings_button_text">Home settings</string>
+    <string name="settings_button_text">Prism settings</string>
     <string name="system_settings">System settings</string>
     <string name="title_change_settings">Change settings</string>
 

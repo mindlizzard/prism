@@ -64,7 +64,7 @@
     <string name="managed_by_lawnchair">Beheerd door Prism Launcher</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Voorkeuren</string>
-    <string name="settings_button_text">Startscherminstellingen</string>
+    <string name="settings_button_text">Prism-instellingen</string>
     <string name="system_settings">Systeeminstellingen</string>
     <string name="title_change_settings">Instellingen wijzigen</string>
     <!--
