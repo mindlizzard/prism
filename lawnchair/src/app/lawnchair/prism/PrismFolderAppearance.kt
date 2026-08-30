@@ -79,7 +79,9 @@ object PrismFolderAppearance {
         PrismFolderVisualStyle.CLASSIC,
         PrismFolderVisualStyle.SOFT,
         -> 0
+
         PrismFolderVisualStyle.GLASS -> 88
+
         PrismFolderVisualStyle.OUTLINE -> 184
     }
 }

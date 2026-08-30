@@ -62,8 +62,10 @@ import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.firstCached
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.OverflowMenuGrouped
+import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.components.AnnouncementPreference
 import app.lawnchair.ui.preferences.components.PrismDashboardHeader
+import app.lawnchair.ui.preferences.components.PrismDashboardQuickActions
 import app.lawnchair.ui.preferences.components.controls.PreferenceCategory
 import app.lawnchair.ui.preferences.components.controls.WarningPreference
 import app.lawnchair.ui.preferences.components.layout.ClickableIcon
@@ -81,8 +83,10 @@ import app.lawnchair.ui.preferences.navigation.Dock
 import app.lawnchair.ui.preferences.navigation.ExperimentalFeatures
 import app.lawnchair.ui.preferences.navigation.Folders
 import app.lawnchair.ui.preferences.navigation.General
+import app.lawnchair.ui.preferences.navigation.GeneralIconPack
 import app.lawnchair.ui.preferences.navigation.Gestures
 import app.lawnchair.ui.preferences.navigation.HomeScreen
+import app.lawnchair.ui.preferences.navigation.HomeScreenGrid
 import app.lawnchair.ui.preferences.navigation.PreferenceRootRoute
 import app.lawnchair.ui.preferences.navigation.Quickstep
 import app.lawnchair.ui.preferences.navigation.Search
@@ -105,6 +109,7 @@ fun PreferencesDashboard(
     SyncLiveInformation()
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
+    val navController = LocalNavController.current
 
     val aboutDescrption = if (prefs.hideVersionInfo.get()) {
         prefs.pseudonymVersion.get()
@@ -120,6 +125,13 @@ fun PreferencesDashboard(
         actions = { PreferencesOverflowMenu(currentRoute = currentRoute, onNavigate = onNavigate) },
     ) {
         PrismDashboardHeader()
+
+        PrismDashboardQuickActions(
+            onThemeClick = { onNavigate(General) },
+            onLayoutClick = { navController.navigate(HomeScreenGrid) },
+            onIconsClick = { navController.navigate(GeneralIconPack) },
+            onBackupClick = { onNavigate(BackupAndRestore) },
+        )
 
         AnnouncementPreference()
 

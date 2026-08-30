@@ -853,6 +853,11 @@
 
     <!-- Prism visuele identiteit -->
     <string name="prism_tagline">Android in jouw kleuren.</string>
+    <string name="prism_quick_actions_title">Prism-snelkoppelingen</string>
+    <string name="prism_quick_theme_description">Kleuren, achtergrond en thema</string>
+    <string name="prism_quick_layout_description">Raster, ruimte en icoongrootte</string>
+    <string name="prism_quick_icons_description">Mix pakketten en maak ontbrekende iconen</string>
+    <string name="prism_quick_backup_description">Bewaar of herstel je indeling</string>
     <string name="prism_theme_engine_active">%1$s-thema • Actief</string>
     <string name="prism_theme_label">Prism-thema</string>
     <string name="prism_theme_system">Systeem</string>

@@ -1102,6 +1102,11 @@
 
     <!-- Prism visual identity -->
     <string name="prism_tagline">Android in your colors.</string>
+    <string name="prism_quick_actions_title">Prism shortcuts</string>
+    <string name="prism_quick_theme_description">Colors, wallpaper and theme</string>
+    <string name="prism_quick_layout_description">Grid, spacing and icon size</string>
+    <string name="prism_quick_icons_description">Mix packs and forge missing icons</string>
+    <string name="prism_quick_backup_description">Save or restore your setup</string>
     <string name="prism_theme_engine_active">%1$s theme • Active</string>
     <string name="prism_theme_label">Prism theme</string>
     <string name="prism_theme_system">System</string>
